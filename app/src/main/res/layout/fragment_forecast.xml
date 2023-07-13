@@ -16,7 +16,7 @@
             android:orientation="vertical" >
 
             <ImageView
-                android:id="@+id/imageView6"
+                android:id="@+id/backBtn"
                 android:layout_width="42dp"
                 android:layout_height="42dp"
                 android:layout_marginStart="32dp"
@@ -37,7 +37,7 @@
                 android:background="@drawable/background_2"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView6">
+                app:layout_constraintTop_toBottomOf="@+id/backBtn">
 
                 <ImageView
                     android:id="@+id/imageView"
@@ -50,7 +50,7 @@
                     app:srcCompat="@drawable/cloudy_sunny" />
 
                 <TextView
-                    android:id="@+id/textView3"
+                    android:id="@+id/tmrwCondText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -59,10 +59,10 @@
                     android:textAlignment="center"
                     android:textColor="@color/white"
                     android:textSize="20sp"
-                    app:layout_constraintEnd_toEndOf="@+id/textView4"
+                    app:layout_constraintEnd_toEndOf="@+id/tmrwTemp"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toEndOf="@+id/imageView"
-                    app:layout_constraintTop_toBottomOf="@+id/textView4" />
+                    app:layout_constraintTop_toBottomOf="@+id/tmrwTemp" />
 
                 <TextView
                     android:id="@+id/textView5"
@@ -80,21 +80,22 @@
                     app:layout_constraintTop_toTopOf="@+id/imageView" />
 
                 <TextView
-                    android:id="@+id/textView4"
+                    android:id="@+id/tmrwTemp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
                     android:layout_marginTop="8dp"
                     android:text="25°"
                     android:textAlignment="center"
                     android:textColor="@color/white"
-                    android:textSize="43sp"
+                    android:textSize="24sp"
                     app:layout_constraintEnd_toEndOf="@+id/textView5"
                     app:layout_constraintHorizontal_bias="0.262"
                     app:layout_constraintStart_toEndOf="@+id/imageView"
                     app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
                 <TextView
-                    android:id="@+id/textView6"
+                    android:id="@+id/tmrwHumidity"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="22%"
@@ -144,9 +145,9 @@
                     android:textAlignment="center"
                     android:textColor="@color/white"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="@+id/textView6"
-                    app:layout_constraintStart_toStartOf="@+id/textView6"
-                    app:layout_constraintTop_toBottomOf="@+id/textView6" />
+                    app:layout_constraintEnd_toEndOf="@+id/tmrwHumidity"
+                    app:layout_constraintStart_toStartOf="@+id/tmrwHumidity"
+                    app:layout_constraintTop_toBottomOf="@+id/tmrwHumidity" />
 
                 <TextView
                     android:id="@+id/textView8"
@@ -158,10 +159,10 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="@+id/imageView3"
                     app:layout_constraintStart_toStartOf="@+id/imageView3"
-                    app:layout_constraintTop_toBottomOf="@+id/textView9" />
+                    app:layout_constraintTop_toBottomOf="@+id/tmrwPrecipProb" />
 
                 <TextView
-                    android:id="@+id/textView9"
+                    android:id="@+id/tmrwPrecipProb"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="14%"
@@ -182,10 +183,10 @@
                     app:layout_constraintEnd_toEndOf="@+id/imageView4"
                     app:layout_constraintHorizontal_bias="0.511"
                     app:layout_constraintStart_toStartOf="@+id/imageView4"
-                    app:layout_constraintTop_toBottomOf="@+id/textView11" />
+                    app:layout_constraintTop_toBottomOf="@+id/tmrwWindspeed" />
 
                 <TextView
-                    android:id="@+id/textView11"
+                    android:id="@+id/tmrwWindspeed"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="12km/h"
@@ -197,6 +198,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rcvForecast"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -207,7 +209,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
 
             <TextView
-                android:id="@+id/textView17"
+                android:id="@+id/locationText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Донецьк, Україна"
@@ -216,7 +218,7 @@
                 android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/imageView6"
+                app:layout_constraintStart_toEndOf="@+id/backBtn"
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
