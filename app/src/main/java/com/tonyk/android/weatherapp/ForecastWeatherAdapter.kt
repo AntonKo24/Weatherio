@@ -3,8 +3,10 @@ package com.tonyk.android.weatherapp
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.tonyk.android.weatherapp.api.DailyWeatherItem
 import com.tonyk.android.weatherapp.databinding.DaysForecastItemBinding
+import com.tonyk.android.weatherapp.util.WeatherIconMapper
 
 class ForecastListHolder(private val binding: DaysForecastItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
@@ -12,6 +14,10 @@ class ForecastListHolder(private val binding: DaysForecastItemBinding) : Recycle
         binding.dayTxt.text = weather.datetime
         binding.tempText.text = "${weather.tempmax}/${weather.tempmin}"
         binding.statusTxt.text = weather.conditions
+
+        val iconName = weather.icon
+        val iconResourceId = WeatherIconMapper.getIconResourceId(iconName)
+        binding.dailyWeatherPic.load(iconResourceId)
 
     }
 }

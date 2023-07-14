@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/weatherPic"
+        android:id="@+id/dailyWeatherPic"
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:layout_marginStart="16dp"
@@ -42,7 +42,7 @@
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/tempText"
-        app:layout_constraintStart_toEndOf="@+id/weatherPic"
+        app:layout_constraintStart_toEndOf="@+id/dailyWeatherPic"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView

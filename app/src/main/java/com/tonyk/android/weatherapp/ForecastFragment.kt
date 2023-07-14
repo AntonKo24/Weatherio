@@ -11,8 +11,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import coil.load
 import com.tonyk.android.weatherapp.databinding.FragmentForecastBinding
 import com.tonyk.android.weatherapp.databinding.FragmentTodayBinding
+import com.tonyk.android.weatherapp.util.WeatherIconMapper
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -56,6 +58,10 @@ class ForecastFragment: Fragment() {
                             tmrwWindspeed.text = items.days[1].windspeed
 
                             binding.rcvForecast.adapter = ForecastWeatherAdapter(items.days)
+
+                            val iconName = items.days[1].icon
+                            val iconResourceId = WeatherIconMapper.getIconResourceId(iconName)
+                            tmrwPic.load(iconResourceId)
                         }
                     }
 

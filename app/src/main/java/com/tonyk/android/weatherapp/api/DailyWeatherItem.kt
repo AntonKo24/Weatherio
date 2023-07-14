@@ -12,5 +12,6 @@ data class DailyWeatherItem (
     val conditions : String,
     val humidity : String,
     val windspeed : String,
-    val precipprob : String
+    val precipprob : String,
+    val icon : String
     )

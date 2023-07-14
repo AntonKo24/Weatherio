@@ -11,9 +11,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import coil.load
 import com.tonyk.android.weatherapp.databinding.FragmentTodayBinding
+import com.tonyk.android.weatherapp.util.WeatherIconMapper
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import java.text.DecimalFormat
 
 @AndroidEntryPoint
 class TodayFragment: Fragment() {
@@ -51,11 +54,17 @@ class TodayFragment: Fragment() {
                     binding.apply {
                         locationTxt.text = items.address
                         currentConditions.text = items.currentConditions.conditions
+
                         currentTempTxt.text = items.currentConditions.temp
                         currentWindspeedTxt.text = items.currentConditions.windspeed
                         currentHumidityTxt.text = items.currentConditions.humidity
                         currentPrecipprob.text = items.currentConditions.precipprob
                         descriptionTxt.text = items.description
+
+                        val iconName = items.currentConditions.icon
+                        val iconResourceId = WeatherIconMapper.getIconResourceId(iconName)
+                        todayWeatherPic.load(iconResourceId)
+
                         if (items.days.isNotEmpty()) {
                             rcvHourly.adapter = TodayWeatherAdapter(items.days[0].hours)
                             todayDateTxt.text = items.days[0].datetime

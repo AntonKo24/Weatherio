@@ -9,5 +9,6 @@ data class CurrentWeatherItem (
     val windspeed : String,
     val humidity : String,
     val conditions : String,
-    val precipprob : String
+    val precipprob : String,
+    val icon : String
 )
