@@ -18,7 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class WeatherViewModel @Inject constructor(private val weatherApiRepository: WeatherApiRepository) : ViewModel() {
 
-    private val _weather: MutableStateFlow<WeatherResponse> = MutableStateFlow(WeatherResponse("", emptyList(), CurrentWeatherItem("", "","", "", "", ""), ""))
+    private val _weather: MutableStateFlow<WeatherResponse> = MutableStateFlow(WeatherResponse("", emptyList(), CurrentWeatherItem(0.0, 0.0,0.0, "", 0.0, ""), ""))
     val weather: StateFlow<WeatherResponse>
         get() = _weather.asStateFlow()
 
@@ -27,10 +27,9 @@ class WeatherViewModel @Inject constructor(private val weatherApiRepository: Wea
             try {
                 val items = weatherApiRepository.fetchWeather()
                 _weather.value = items
-                Log.d("yoyoyo", "Items received: $items")
 
             } catch (ex: Exception) {
-                Log.e("yoyoyo", "Failed to fetch gallery items", ex)
+                Log.e("Exception", "Failed to fetch gallery items", ex)
             }
         }
     }

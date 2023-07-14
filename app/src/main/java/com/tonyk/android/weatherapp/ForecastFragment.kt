@@ -13,7 +13,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
 import com.tonyk.android.weatherapp.databinding.FragmentForecastBinding
-import com.tonyk.android.weatherapp.databinding.FragmentTodayBinding
+import com.tonyk.android.weatherapp.util.WeatherConverter
 import com.tonyk.android.weatherapp.util.WeatherIconMapper
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -51,17 +51,16 @@ class ForecastFragment: Fragment() {
                     binding.apply {
                         locationText.text = items.address
                         if (items.days.isNotEmpty()) {
-                            tmrwTemp.text = "${items.days[1].tempmax}/${items.days[1].tempmin}"
+                            tmrwTemp.text = getString(R.string.High_Low_temp,
+                                WeatherConverter.formatData(items.days[1].tempmax),
+                                WeatherConverter.formatData(items.days[1].tempmin))
                             tmrwCondText.text = items.days[1].conditions
-                            tmrwHumidity.text = items.days[1].humidity
-                            tmrwPrecipProb.text = items.days[1].precipprob
-                            tmrwWindspeed.text = items.days[1].windspeed
+                            tmrwHumidity.text = getString(R.string.HumidityData, WeatherConverter.formatData(items.days[1].humidity))
+                            tmrwPrecipProb.text = getString(R.string.PressureData, WeatherConverter.formatData(items.days[1].pressure))
+                            tmrwWindspeed.text = getString(R.string.WindspeedData, WeatherConverter.formatData(items.days[1].windspeed))
+                            tmrwPic.load(WeatherIconMapper.getIconResourceId(items.days[1].icon))
 
-                            binding.rcvForecast.adapter = ForecastWeatherAdapter(items.days)
-
-                            val iconName = items.days[1].icon
-                            val iconResourceId = WeatherIconMapper.getIconResourceId(iconName)
-                            tmrwPic.load(iconResourceId)
+                            rcvForecast.adapter = ForecastWeatherAdapter(items.days)
                         }
                     }
 

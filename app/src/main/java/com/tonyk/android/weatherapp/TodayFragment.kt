@@ -13,10 +13,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
 import com.tonyk.android.weatherapp.databinding.FragmentTodayBinding
+import com.tonyk.android.weatherapp.util.DateConverter
+import com.tonyk.android.weatherapp.util.WeatherConverter
 import com.tonyk.android.weatherapp.util.WeatherIconMapper
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import java.text.DecimalFormat
 
 @AndroidEntryPoint
 class TodayFragment: Fragment() {
@@ -42,9 +43,7 @@ class TodayFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val rcView = binding.rcvHourly
-        val layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        rcView.layoutManager = layoutManager
+        binding.rcvHourly.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -54,21 +53,18 @@ class TodayFragment: Fragment() {
                     binding.apply {
                         locationTxt.text = items.address
                         currentConditions.text = items.currentConditions.conditions
-
-                        currentTempTxt.text = items.currentConditions.temp
-                        currentWindspeedTxt.text = items.currentConditions.windspeed
-                        currentHumidityTxt.text = items.currentConditions.humidity
-                        currentPrecipprob.text = items.currentConditions.precipprob
+                        currentTempTxt.text = getString(R.string.Temperature, WeatherConverter.formatData(items.currentConditions.temp))
+                        currentWindspeedTxt.text = getString(R.string.WindspeedData,WeatherConverter.formatData(items.currentConditions.windspeed))
+                        currentHumidityTxt.text = getString(R.string.HumidityData, WeatherConverter.formatData(items.currentConditions.humidity))
+                        currentPrecipprob.text = getString(R.string.PressureData, WeatherConverter.formatData(items.currentConditions.pressure))
                         descriptionTxt.text = items.description
-
-                        val iconName = items.currentConditions.icon
-                        val iconResourceId = WeatherIconMapper.getIconResourceId(iconName)
-                        todayWeatherPic.load(iconResourceId)
-
+                        todayWeatherPic.load(WeatherIconMapper.getIconResourceId(items.currentConditions.icon))
                         if (items.days.isNotEmpty()) {
                             rcvHourly.adapter = TodayWeatherAdapter(items.days[0].hours)
-                            todayDateTxt.text = items.days[0].datetime
-                            hlTempTxt.text = "H: ${items.days[0].tempmax} L: ${items.days[0].tempmin}"
+                            todayDateTxt.text = DateConverter.formatDate(items.days[0].datetime)
+                            hlTempTxt.text = getString(R.string.High_Low_temp,
+                                WeatherConverter.formatData(items.days[0].tempmax),
+                                WeatherConverter.formatData(items.days[0].tempmin))
                         }
                     }
                 }

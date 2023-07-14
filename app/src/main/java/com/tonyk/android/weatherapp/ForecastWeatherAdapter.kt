@@ -6,19 +6,21 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.tonyk.android.weatherapp.api.DailyWeatherItem
 import com.tonyk.android.weatherapp.databinding.DaysForecastItemBinding
+import com.tonyk.android.weatherapp.util.DateConverter
+import com.tonyk.android.weatherapp.util.WeatherConverter
 import com.tonyk.android.weatherapp.util.WeatherIconMapper
 
 class ForecastListHolder(private val binding: DaysForecastItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(weather: DailyWeatherItem) {
-        binding.dayTxt.text = weather.datetime
-        binding.tempText.text = "${weather.tempmax}/${weather.tempmin}"
-        binding.statusTxt.text = weather.conditions
-
-        val iconName = weather.icon
-        val iconResourceId = WeatherIconMapper.getIconResourceId(iconName)
-        binding.dailyWeatherPic.load(iconResourceId)
-
+        binding.apply {
+            dayTxt.text = DateConverter.formatDate(weather.datetime)
+            tempText.text = binding.root.context.getString(R.string.High_Low_temp2,
+                WeatherConverter.formatData(weather.tempmax),
+                WeatherConverter.formatData(weather.tempmin))
+            statusTxt.text = weather.conditions
+            dailyWeatherPic.load(WeatherIconMapper.getIconResourceId(weather.icon))
+        }
     }
 }
 

@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">Weatherio</string>
+
+    <string name="High_Low_temp">H: %s° L: %s°</string>
+    <string name="High_Low_temp2">%s°/%s°</string>
+    <string name="WindspeedData">%s km/h</string>
+    <string name="HumidityData">%s%%</string>
+    <string name="PressureData">%s mb</string>
+    <string name="Windspeed">Wind Speed</string>
+    <string name="Humidity">Humidity</string>
+    <string name="Pressure">Pressure</string>
+    <string name="Today">Today</string>
+    <string name="CheckNext">Next 15 days ></string>
+    <string name="Temperature">%s°</string>
+
 </resources>
