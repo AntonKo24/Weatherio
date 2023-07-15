@@ -43,7 +43,15 @@ class TodayFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.rcvHourly.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        binding.apply {
+            rcvHourly.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            checkForecastBtn.setOnClickListener {
+                findNavController().navigate(TodayFragmentDirections.showForecast())
+            }
+            manageLocations.setOnClickListener {
+                findNavController().navigate(TodayFragmentDirections.manageLocations())
+            }
+        }
 
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -69,12 +77,6 @@ class TodayFragment: Fragment() {
                     }
                 }
             }
-        }
-        binding.checkForecastBtn.setOnClickListener {
-            findNavController().navigate(TodayFragmentDirections.showForecast())
-        }
-        binding.manageLocations.setOnClickListener {
-            findNavController().navigate(TodayFragmentDirections.manageLocations())
         }
     }
 
