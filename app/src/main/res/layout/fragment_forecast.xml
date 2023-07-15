@@ -19,7 +19,7 @@
                 android:id="@+id/backBtn"
                 android:layout_width="42dp"
                 android:layout_height="42dp"
-                android:layout_marginStart="32dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:background="@drawable/back_btn_background"
                 android:padding="10dp"
@@ -159,10 +159,10 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="@+id/imageView3"
                     app:layout_constraintStart_toStartOf="@+id/imageView3"
-                    app:layout_constraintTop_toBottomOf="@+id/tmrwPrecipProb" />
+                    app:layout_constraintTop_toBottomOf="@+id/tmrwPressure" />
 
                 <TextView
-                    android:id="@+id/tmrwPrecipProb"
+                    android:id="@+id/tmrwPressure"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="14%"

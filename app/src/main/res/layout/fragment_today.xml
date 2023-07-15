@@ -23,7 +23,7 @@
 
             <TextView
                 android:id="@+id/todayTxt"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/Today"
@@ -32,7 +32,6 @@
                 android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -64,10 +63,13 @@
 
                 <TextView
                     android:id="@+id/locationTxt"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
                     android:layout_marginTop="8dp"
-                    android:text="Донецьк, Україна"
+                    android:layout_marginEnd="16dp"
+                    android:text="Donetsk, Ukraine"
+                    android:textAlignment="center"
                     android:textColor="@color/white"
                     android:textSize="20sp"
                     android:textStyle="bold"
@@ -92,7 +94,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="Mostly Cloudy"
+                    android:text="@string/Conditions"
                     android:textAlignment="center"
                     android:textColor="@color/white"
                     android:textSize="20sp"
@@ -130,7 +132,7 @@
                     android:id="@+id/currentHumidityTxt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="22%"
+                    android:text="@string/HumidityData"
                     android:textAlignment="center"
                     android:textColor="@color/white"
                     android:textStyle="bold"
@@ -191,13 +193,13 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="@+id/pressurePic"
                     app:layout_constraintStart_toStartOf="@+id/pressurePic"
-                    app:layout_constraintTop_toBottomOf="@+id/currentPrecipprob" />
+                    app:layout_constraintTop_toBottomOf="@+id/currentPressure" />
 
                 <TextView
-                    android:id="@+id/currentPrecipprob"
+                    android:id="@+id/currentPressure"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="14%"
+                    android:text="@string/PressureData"
                     android:textColor="@color/white"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="@+id/textView8"
@@ -282,6 +284,27 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/rcvHourly" />
+
+            <ImageView
+                android:id="@+id/manageLocations"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintBottom_toTopOf="@+id/todayDateTxt"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_add" />
+
+            <ImageView
+                android:id="@+id/imageView5"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintBottom_toBottomOf="@+id/manageLocations"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/manageLocations"
+                app:srcCompat="@drawable/ic_settings" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

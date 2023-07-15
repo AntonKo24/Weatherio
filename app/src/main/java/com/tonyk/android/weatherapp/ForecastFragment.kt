@@ -46,21 +46,21 @@ class ForecastFragment: Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                weatherViewModel.weather.collect { items ->
+                weatherViewModel.weather.collect { weather ->
 
                     binding.apply {
-                        locationText.text = items.address
-                        if (items.days.isNotEmpty()) {
+                        locationText.text = weather.resolvedAddress
+                        if (weather.days.isNotEmpty()) {
                             tmrwTemp.text = getString(R.string.High_Low_temp,
-                                WeatherConverter.formatData(items.days[1].tempmax),
-                                WeatherConverter.formatData(items.days[1].tempmin))
-                            tmrwCondText.text = items.days[1].conditions
-                            tmrwHumidity.text = getString(R.string.HumidityData, WeatherConverter.formatData(items.days[1].humidity))
-                            tmrwPrecipProb.text = getString(R.string.PressureData, WeatherConverter.formatData(items.days[1].pressure))
-                            tmrwWindspeed.text = getString(R.string.WindspeedData, WeatherConverter.formatData(items.days[1].windspeed))
-                            tmrwPic.load(WeatherIconMapper.getIconResourceId(items.days[1].icon))
+                                WeatherConverter.formatData(weather.days[1].tempmax),
+                                WeatherConverter.formatData(weather.days[1].tempmin))
+                            tmrwCondText.text = weather.days[1].conditions
+                            tmrwHumidity.text = getString(R.string.HumidityData, WeatherConverter.formatData(weather.days[1].humidity))
+                            tmrwPressure.text = getString(R.string.PressureData, WeatherConverter.formatData(weather.days[1].pressure))
+                            tmrwWindspeed.text = getString(R.string.WindspeedData, WeatherConverter.formatData(weather.days[1].windspeed))
+                            tmrwPic.load(WeatherIconMapper.getIconResourceId(weather.days[1].icon))
 
-                            rcvForecast.adapter = ForecastWeatherAdapter(items.days)
+                            rcvForecast.adapter = ForecastWeatherAdapter(weather.days)
                         }
                     }
 

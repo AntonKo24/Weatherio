@@ -12,5 +12,6 @@
     <string name="Today">Today</string>
     <string name="CheckNext">Next 15 days ></string>
     <string name="Temperature">%s°</string>
+    <string name="Conditions">Current conditions</string>
 
 </resources>

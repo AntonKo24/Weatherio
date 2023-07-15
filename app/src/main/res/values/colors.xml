@@ -5,4 +5,6 @@
     <color name="back_1">#161C2A</color>
     <color name="back_2">#1A2332</color>
     <color name="yellow">#FDD020</color>
+    <color name="custom_hint_color">#FF0000</color> <!-- Replace with your desired color -->
+
 </resources>

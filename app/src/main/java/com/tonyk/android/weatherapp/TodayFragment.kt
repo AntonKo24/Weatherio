@@ -48,23 +48,23 @@ class TodayFragment: Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                weatherViewModel.weather.collect { items ->
+                weatherViewModel.weather.collect { weather ->
 
                     binding.apply {
-                        locationTxt.text = items.address
-                        currentConditions.text = items.currentConditions.conditions
-                        currentTempTxt.text = getString(R.string.Temperature, WeatherConverter.formatData(items.currentConditions.temp))
-                        currentWindspeedTxt.text = getString(R.string.WindspeedData,WeatherConverter.formatData(items.currentConditions.windspeed))
-                        currentHumidityTxt.text = getString(R.string.HumidityData, WeatherConverter.formatData(items.currentConditions.humidity))
-                        currentPrecipprob.text = getString(R.string.PressureData, WeatherConverter.formatData(items.currentConditions.pressure))
-                        descriptionTxt.text = items.description
-                        todayWeatherPic.load(WeatherIconMapper.getIconResourceId(items.currentConditions.icon))
-                        if (items.days.isNotEmpty()) {
-                            rcvHourly.adapter = TodayWeatherAdapter(items.days[0].hours)
-                            todayDateTxt.text = DateConverter.formatDate(items.days[0].datetime)
+                        locationTxt.text = weather.resolvedAddress
+                        currentConditions.text = weather.currentConditions.conditions
+                        currentTempTxt.text = getString(R.string.Temperature, WeatherConverter.formatData(weather.currentConditions.temp))
+                        currentWindspeedTxt.text = getString(R.string.WindspeedData,WeatherConverter.formatData(weather.currentConditions.windspeed))
+                        currentHumidityTxt.text = getString(R.string.HumidityData, WeatherConverter.formatData(weather.currentConditions.humidity))
+                        currentPressure.text = getString(R.string.PressureData, WeatherConverter.formatData(weather.currentConditions.pressure))
+                        descriptionTxt.text = weather.description
+                        todayWeatherPic.load(WeatherIconMapper.getIconResourceId(weather.currentConditions.icon))
+                        if (weather.days.isNotEmpty()) {
+                            rcvHourly.adapter = TodayWeatherAdapter(weather.days[0].hours)
+                            todayDateTxt.text = DateConverter.formatDate(weather.days[0].datetime)
                             hlTempTxt.text = getString(R.string.High_Low_temp,
-                                WeatherConverter.formatData(items.days[0].tempmax),
-                                WeatherConverter.formatData(items.days[0].tempmin))
+                                WeatherConverter.formatData(weather.days[0].tempmax),
+                                WeatherConverter.formatData(weather.days[0].tempmin))
                         }
                     }
                 }
@@ -72,6 +72,9 @@ class TodayFragment: Fragment() {
         }
         binding.checkForecastBtn.setOnClickListener {
             findNavController().navigate(TodayFragmentDirections.showForecast())
+        }
+        binding.manageLocations.setOnClickListener {
+            findNavController().navigate(TodayFragmentDirections.manageLocations())
         }
     }
 

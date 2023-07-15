@@ -13,10 +13,18 @@
         <action
             android:id="@+id/show_forecast"
             app:destination="@id/forecastFragment" />
+        <action
+            android:id="@+id/manage_locations"
+            app:destination="@id/hilt_ManageLocationsFragment" />
     </fragment>
     <fragment
         android:id="@+id/forecastFragment"
         android:name="com.tonyk.android.weatherapp.ForecastFragment"
         android:label="ForecastFragment"
         tools:layout="@layout/fragment_forecast"/>
+    <fragment
+        android:id="@+id/hilt_ManageLocationsFragment"
+        android:name="com.tonyk.android.weatherapp.ManageLocationsFragment"
+        android:label="Hilt_ManageLocationsFragment"
+        tools:layout="@layout/fragment_manage_locations"/>
 </navigation>
