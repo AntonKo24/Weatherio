@@ -5,6 +5,7 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class CurrentWeatherItem (
+    val datetime : String,
     val temp: Double,
     val windspeed : Double,
     val humidity : Double,

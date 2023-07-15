@@ -60,7 +60,7 @@ class TodayFragment: Fragment() {
                         descriptionTxt.text = weather.description
                         todayWeatherPic.load(WeatherIconMapper.getIconResourceId(weather.currentConditions.icon))
                         if (weather.days.isNotEmpty()) {
-                            rcvHourly.adapter = TodayWeatherAdapter(weather.days[0].hours)
+                            rcvHourly.adapter = TodayWeatherAdapter(weatherViewModel.hoursList)
                             todayDateTxt.text = DateConverter.formatDate(weather.days[0].datetime)
                             hlTempTxt.text = getString(R.string.High_Low_temp,
                                 WeatherConverter.formatData(weather.days[0].tempmax),
