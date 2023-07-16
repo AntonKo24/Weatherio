@@ -11,8 +11,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import coil.load
 import com.tonyk.android.weatherapp.databinding.FragmentTodayBinding
+import com.tonyk.android.weatherapp.util.DateConverter
+import com.tonyk.android.weatherapp.util.WeatherConverter
+import com.tonyk.android.weatherapp.util.WeatherIconMapper
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -39,34 +44,43 @@ class TodayFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val rcView = binding.rcvHourly
-        val layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        rcView.layoutManager = layoutManager
+        binding.rcvHourly.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+
+        binding.apply {
+
+            checkForecastBtn.setOnClickListener {
+                findNavController().navigate(TodayFragmentDirections.showForecast())
+            }
+            manageLocations.setOnClickListener {
+                findNavController().navigate(TodayFragmentDirections.manageLocations())
+            }
+        }
 
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                weatherViewModel.weather.collect { items ->
+                weatherViewModel.weather.collect { weather ->
+
 
                     binding.apply {
-                        locationTxt.text = items.address
-                        currentConditions.text = items.currentConditions.conditions
-                        currentTempTxt.text = items.currentConditions.temp
-                        currentWindspeedTxt.text = items.currentConditions.windspeed
-                        currentHumidityTxt.text = items.currentConditions.humidity
-                        currentPrecipprob.text = items.currentConditions.precipprob
-                        descriptionTxt.text = items.description
-                        if (items.days.isNotEmpty()) {
-                            rcvHourly.adapter = TodayWeatherAdapter(items.days[0].hours)
-                            todayDateTxt.text = items.days[0].datetime
-                            hlTempTxt.text = "H: ${items.days[0].tempmax} L: ${items.days[0].tempmin}"
+                        locationTxt.text = weather.resolvedAddress
+                        currentConditions.text = weather.currentConditions.conditions
+                        currentTempTxt.text = getString(R.string.Temperature, WeatherConverter.formatData(weather.currentConditions.temp))
+                        currentWindspeedTxt.text = getString(R.string.WindspeedData,WeatherConverter.formatData(weather.currentConditions.windspeed))
+                        currentHumidityTxt.text = getString(R.string.HumidityData, WeatherConverter.formatData(weather.currentConditions.humidity))
+                        currentPressure.text = getString(R.string.PressureData, WeatherConverter.formatData(weather.currentConditions.pressure))
+                        descriptionTxt.text = weather.description
+                        todayWeatherPic.load(WeatherIconMapper.getIconResourceId(weather.currentConditions.icon))
+                        if (weather.days.isNotEmpty()) {
+                            rcvHourly.adapter = TodayWeatherAdapter(weatherViewModel.hoursList)
+                            todayDateTxt.text = DateConverter.formatDate(weather.days[0].datetime)
+                            hlTempTxt.text = getString(R.string.High_Low_temp,
+                                WeatherConverter.formatData(weather.days[0].tempmax),
+                                WeatherConverter.formatData(weather.days[0].tempmin))
                         }
                     }
                 }
             }
-        }
-        binding.checkForecastBtn.setOnClickListener {
-            findNavController().navigate(TodayFragmentDirections.showForecast())
         }
     }
 

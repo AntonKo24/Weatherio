@@ -6,6 +6,6 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class HourlyWeatherItem (
         val datetime : String,
-        val temp : String,
+        val temp : Double,
         val icon : String
         )

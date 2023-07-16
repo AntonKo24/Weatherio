@@ -24,18 +24,18 @@
             android:textSize="16sp" />
 
         <ImageView
-            android:id="@+id/imageView5"
+            android:id="@+id/hourlyPic"
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:layout_gravity="center"
-            app:srcCompat="@drawable/cloudy_sunny" />
+            app:srcCompat="@drawable/partly_cloudy_day" />
 
         <TextView
             android:id="@+id/tempTxt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:text="20"
+            android:text="@string/Temperature"
             android:textAlignment="center"
             android:textColor="@color/white"
             android:textSize="20sp" />

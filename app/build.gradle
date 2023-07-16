@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId "com.tonyk.android.weatherapp"
-        minSdk 24
+        minSdk 26
         targetSdk 33
         versionCode 1
         versionName "1.0"
@@ -71,5 +71,7 @@ dependencies {
 
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
+
+    implementation 'io.coil-kt:coil:2.0.0-rc02'
 
 }

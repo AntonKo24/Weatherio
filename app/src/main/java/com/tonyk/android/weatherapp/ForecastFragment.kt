@@ -11,8 +11,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import coil.load
 import com.tonyk.android.weatherapp.databinding.FragmentForecastBinding
-import com.tonyk.android.weatherapp.databinding.FragmentTodayBinding
+import com.tonyk.android.weatherapp.util.WeatherConverter
+import com.tonyk.android.weatherapp.util.WeatherIconMapper
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -38,24 +40,24 @@ class ForecastFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-        val layoutManager = LinearLayoutManager(context)
-        binding.rcvForecast.layoutManager = layoutManager
+        binding.rcvForecast.layoutManager = LinearLayoutManager(context)
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                weatherViewModel.weather.collect { items ->
-
+                weatherViewModel.weather.collect { weather ->
                     binding.apply {
-                        locationText.text = items.address
-                        if (items.days.isNotEmpty()) {
-                            tmrwTemp.text = "${items.days[1].tempmax}/${items.days[1].tempmin}"
-                            tmrwCondText.text = items.days[1].conditions
-                            tmrwHumidity.text = items.days[1].humidity
-                            tmrwPrecipProb.text = items.days[1].precipprob
-                            tmrwWindspeed.text = items.days[1].windspeed
+                        locationText.text = weather.resolvedAddress
+                        if (weather.days.isNotEmpty()) {
+                            tmrwTemp.text = getString(R.string.High_Low_temp,
+                                WeatherConverter.formatData(weather.days[1].tempmax),
+                                WeatherConverter.formatData(weather.days[1].tempmin))
+                            tmrwCondText.text = weather.days[1].conditions
+                            tmrwHumidity.text = getString(R.string.HumidityData, WeatherConverter.formatData(weather.days[1].humidity))
+                            tmrwPressure.text = getString(R.string.PressureData, WeatherConverter.formatData(weather.days[1].pressure))
+                            tmrwWindspeed.text = getString(R.string.WindspeedData, WeatherConverter.formatData(weather.days[1].windspeed))
+                            tmrwPic.load(WeatherIconMapper.getIconResourceId(weather.days[1].icon))
 
-                            binding.rcvForecast.adapter = ForecastWeatherAdapter(items.days)
+                            rcvForecast.adapter = ForecastWeatherAdapter(weather.days)
                         }
                     }
 

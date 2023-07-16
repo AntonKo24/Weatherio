@@ -2,18 +2,24 @@ package com.tonyk.android.weatherapp
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.tonyk.android.weatherapp.api.HourlyWeatherItem
-import com.tonyk.android.weatherapp.databinding.FragmentForecastBinding
 import com.tonyk.android.weatherapp.databinding.HourlyForecastItemBinding
+import com.tonyk.android.weatherapp.util.DateConverter
+import com.tonyk.android.weatherapp.util.WeatherConverter
+import com.tonyk.android.weatherapp.util.WeatherIconMapper
 
 
 class TodayListHolder(private val binding: HourlyForecastItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(weather: HourlyWeatherItem) {
-        binding.hourlyTxt.text = weather.datetime
-        binding.tempTxt.text = weather.temp
+        binding.apply {
+            hourlyTxt.text = DateConverter.formatTime(weather.datetime)
+            tempTxt.text = root.context.getString(R.string.Temperature,WeatherConverter.formatData(weather.temp))
+            hourlyPic.load(WeatherIconMapper.getIconResourceId(weather.icon))
+        }
+
     }
 }
 
