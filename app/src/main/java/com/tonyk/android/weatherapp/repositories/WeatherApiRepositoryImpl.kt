@@ -9,7 +9,6 @@ import javax.inject.Singleton
 class WeatherApiRepositoryImpl @Inject constructor(private val weatherApi: WeatherApi) :
     WeatherApiRepository {
 
-    override suspend fun fetchWeather() : WeatherResponse =
-        weatherApi.fetchWeather()
-
+    override suspend fun fetchWeather(location: String) : WeatherResponse =
+        weatherApi.fetchWeather(location)
 }

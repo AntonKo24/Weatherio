@@ -24,7 +24,7 @@
         tools:layout="@layout/fragment_forecast"/>
     <fragment
         android:id="@+id/hilt_ManageLocationsFragment"
-        android:name="com.tonyk.android.weatherapp.ManageLocationsFragment"
+        android:name="com.tonyk.android.weatherapp.LocationsFragment"
         android:label="Hilt_ManageLocationsFragment"
-        tools:layout="@layout/fragment_manage_locations"/>
+        tools:layout="@layout/fragment_locations"/>
 </navigation>

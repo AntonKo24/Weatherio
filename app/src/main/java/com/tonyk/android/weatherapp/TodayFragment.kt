@@ -17,6 +17,7 @@ import com.tonyk.android.weatherapp.util.DateConverter
 import com.tonyk.android.weatherapp.util.WeatherConverter
 import com.tonyk.android.weatherapp.util.WeatherIconMapper
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -43,8 +44,10 @@ class TodayFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.rcvHourly.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+
         binding.apply {
-            rcvHourly.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+
             checkForecastBtn.setOnClickListener {
                 findNavController().navigate(TodayFragmentDirections.showForecast())
             }
@@ -57,6 +60,7 @@ class TodayFragment: Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 weatherViewModel.weather.collect { weather ->
+
 
                     binding.apply {
                         locationTxt.text = weather.resolvedAddress

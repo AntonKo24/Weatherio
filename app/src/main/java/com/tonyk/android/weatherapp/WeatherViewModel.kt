@@ -26,17 +26,21 @@ class WeatherViewModel @Inject constructor(private val weatherApiRepository: Wea
     private val _hoursList = mutableListOf<HourlyWeatherItem>()
     val hoursList: List<HourlyWeatherItem> get() = _hoursList
 
+
     init {
         viewModelScope.launch {
             try {
-                val items = weatherApiRepository.fetchWeather()
+                val items = weatherApiRepository.fetchWeather("London")
                 _weather.value = items
                 processHourlyForecast(items)
-            } catch (ex: Exception) {
-                Log.e("Exception", "Failed to fetch weather items", ex)
+                Log.d("HM", "$hoursList")
+            }
+            catch (ex: Exception) {
+                Log.e("Exception", "$ex", ex)
             }
         }
     }
+
 
     private fun processHourlyForecast(weatherData: WeatherResponse) {
         val hoursToAdd = mutableListOf<HourlyWeatherItem>()
@@ -45,14 +49,19 @@ class WeatherViewModel @Inject constructor(private val weatherApiRepository: Wea
         var hourIndex = weatherData.days[0].hours.indexOfFirst {
             LocalTime.parse(it.datetime) >= LocalTime.parse(weatherData.currentConditions.datetime)
         }
-        while (remainingHours > 0) {
+        if (hourIndex == -1) {
+            hourIndex = 0
+        }
+        while (remainingHours > 0 && dayIndex < weatherData.days.size) {
             val dayHours = weatherData.days[dayIndex].hours
-            val hoursToCopy = remainingHours - hourIndex
+            val hoursToCopy = minOf(remainingHours, dayHours.size - hourIndex)
             hoursToAdd.addAll(dayHours.subList(hourIndex, hourIndex + hoursToCopy))
             remainingHours -= hoursToCopy
             dayIndex++
             hourIndex = 0
         }
+
         _hoursList.addAll(hoursToAdd)
     }
+
 }

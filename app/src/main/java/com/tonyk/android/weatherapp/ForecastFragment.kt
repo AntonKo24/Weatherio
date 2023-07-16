@@ -40,14 +40,11 @@ class ForecastFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-        val layoutManager = LinearLayoutManager(context)
-        binding.rcvForecast.layoutManager = layoutManager
+        binding.rcvForecast.layoutManager = LinearLayoutManager(context)
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 weatherViewModel.weather.collect { weather ->
-
                     binding.apply {
                         locationText.text = weather.resolvedAddress
                         if (weather.days.isNotEmpty()) {
