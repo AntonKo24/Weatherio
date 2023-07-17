@@ -33,10 +33,9 @@ class WeatherViewModel @Inject constructor(private val weatherApiRepository: Wea
                 val items = weatherApiRepository.fetchWeather("London")
                 _weather.value = items
                 processHourlyForecast(items)
-                Log.d("HM", "$hoursList")
             }
             catch (ex: Exception) {
-                Log.e("Exception", "$ex", ex)
+                Log.d("Exception", "$ex")
             }
         }
     }

@@ -16,8 +16,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
-
-
     @Provides
     @Singleton
     fun provideOkHttpClient(): OkHttpClient {
@@ -25,7 +23,6 @@ object NetworkModule {
             .addInterceptor(WeatherInterceptor())
             .build()
     }
-
     @Provides
     @Singleton
     fun provideWeatherApi(okHttpClient: OkHttpClient): WeatherApi {
@@ -35,7 +32,6 @@ object NetworkModule {
             .client(okHttpClient)
             .build()
         return retrofit.create(WeatherApi::class.java)
-
     }
     @Provides
     @Singleton
