@@ -1,4 +1,4 @@
-package com.tonyk.android.weatherapp
+package com.tonyk.android.weatherapp.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,9 +12,12 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
+import com.tonyk.android.weatherapp.ForecastWeatherAdapter
+import com.tonyk.android.weatherapp.R
 import com.tonyk.android.weatherapp.databinding.FragmentForecastBinding
 import com.tonyk.android.weatherapp.util.WeatherConverter
 import com.tonyk.android.weatherapp.util.WeatherIconMapper
+import com.tonyk.android.weatherapp.viewmodel.WeatherViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -48,7 +51,8 @@ class ForecastFragment: Fragment() {
                     binding.apply {
                         locationText.text = weather.resolvedAddress
                         if (weather.days.isNotEmpty()) {
-                            tmrwTemp.text = getString(R.string.High_Low_temp,
+                            tmrwTemp.text = getString(
+                                R.string.High_Low_temp,
                                 WeatherConverter.formatData(weather.days[1].tempmax),
                                 WeatherConverter.formatData(weather.days[1].tempmin))
                             tmrwCondText.text = weather.days[1].conditions

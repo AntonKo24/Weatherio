@@ -4,18 +4,19 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tonyk.android.weatherapp.api.WeatherResponse
+import com.tonyk.android.weatherapp.data.WeatherioItem
 import com.tonyk.android.weatherapp.databinding.LocationItemBinding
 import com.tonyk.android.weatherapp.util.WeatherConverter
 
 class LocationsViewHolder(private val binding: LocationItemBinding) :
     RecyclerView.ViewHolder(binding.root) {
-    fun bind(locationListItem: WeatherResponse) {
+    fun bind(locationListItem: WeatherioItem) {
         binding.apply {
-            resolvedAddressTxt.text = locationListItem.resolvedAddress
-            tempText.text = root.context.getString(R.string.Temperature, WeatherConverter.formatData(locationListItem.currentConditions.temp))
+            resolvedAddressTxt.text = locationListItem.address
+            tempText.text = root.context.getString(R.string.Temperature, WeatherConverter.formatData(locationListItem.weather.currentConditions.temp))
             highLowText.text = root.context.getString(R.string.High_Low_temp,
-                WeatherConverter.formatData(locationListItem.days[0].tempmax),
-                WeatherConverter.formatData(locationListItem.days[0].tempmin))
+                WeatherConverter.formatData(locationListItem.weather.days[0].tempmax),
+                WeatherConverter.formatData(locationListItem.weather.days[0].tempmin))
             root.setOnClickListener {
 
             }
@@ -23,7 +24,7 @@ class LocationsViewHolder(private val binding: LocationItemBinding) :
     }
 }
 
-class LocationsAdapter(private val locationsList: List<WeatherResponse>) :
+class LocationsAdapter(private val locationsList: List<WeatherioItem>) :
     RecyclerView.Adapter<LocationsViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LocationsViewHolder {
