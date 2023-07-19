@@ -25,9 +25,8 @@ import kotlinx.coroutines.launch
 class ForecastFragment: Fragment() {
     private var _binding: FragmentForecastBinding? = null
     private val binding
-        get () = checkNotNull(_binding) {
-            "Cannot access binding because it is null. Is the view visible?"
-        }
+        get () = checkNotNull(_binding)
+
     private val weatherViewModel : WeatherViewModel by activityViewModels()
 
     override fun onCreateView(

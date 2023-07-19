@@ -20,7 +20,7 @@ import com.google.android.libraries.places.widget.listener.PlaceSelectionListene
 import com.tonyk.android.weatherapp.LocationsAdapter
 import com.tonyk.android.weatherapp.R
 import com.tonyk.android.weatherapp.databinding.FragmentLocationsBinding
-import com.tonyk.android.weatherapp.viewmodel.WeatherViewModel
+import com.tonyk.android.weatherapp.viewmodel.LocationsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -28,11 +28,9 @@ import kotlinx.coroutines.launch
 class LocationsFragment: Fragment() {
     private var _binding: FragmentLocationsBinding? = null
     private val binding
-        get () = checkNotNull(_binding) {
-            "Cannot access binding because it is null. Is the view visible?"
-        }
+        get () = checkNotNull(_binding)
 
-    private val weatherViewModel : WeatherViewModel by viewModels()
+    private val locationsViewModel : LocationsViewModel by viewModels()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -56,7 +54,7 @@ class LocationsFragment: Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                weatherViewModel.locationsList.collect { list ->
+                locationsViewModel.locationsList.collect { list ->
                     if (list.isNotEmpty()) {
                         binding.rcvLocations.adapter = LocationsAdapter(list)
                     }
@@ -66,7 +64,7 @@ class LocationsFragment: Fragment() {
         }
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                weatherViewModel.errorState.collect { error ->
+                locationsViewModel.errorState.collect { error ->
                     Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show()
                 }
             }
@@ -83,7 +81,7 @@ class LocationsFragment: Fragment() {
                 val longitude = place.latLng?.longitude ?: 0.0
                 val coords = "$latitude,$longitude"
                 val placeName = place.name ?: "Not found"
-                weatherViewModel.setQuery(coords, placeName)
+                locationsViewModel.setQuery(coords, placeName)
             }
             override fun onError(status: Status) {
                 Toast.makeText(requireContext(), "Autocomplete error: ${status.statusMessage}", Toast.LENGTH_SHORT).show()
