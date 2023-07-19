@@ -1,19 +1,15 @@
 package com.tonyk.android.weatherapp.viewmodel
 
-import android.annotation.SuppressLint
-import android.location.Location
 import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.Priority
 import com.tonyk.android.weatherapp.api.CurrentWeatherItem
 import com.tonyk.android.weatherapp.api.HourlyWeatherItem
 import com.tonyk.android.weatherapp.api.WeatherResponse
 import com.tonyk.android.weatherapp.repositories.WeatherApiRepository
-import com.tonyk.android.weatherapp.util.Permissions
-import com.tonyk.android.weatherapp.util.Permissions.requestLocationPermission
+import com.tonyk.android.weatherapp.util.LocationService
+
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,7 +17,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalTime
 import javax.inject.Inject
-
 
 
 @HiltViewModel
@@ -69,22 +64,26 @@ class WeatherViewModel @Inject constructor(private val weatherApiRepository: Wea
         _hoursList.addAll(hoursToAdd)
     }
 
-     private fun loadLast() {
+    private fun loadLast() {
         initializeWeatherViewModel("london")
     }
+    private fun loadCurrent(activity: FragmentActivity){
+        LocationService.getLocation(activity) { coordinates ->
+            initializeWeatherViewModel(coordinates)
+        }
+    }
 
-    fun startedFrag(context : FragmentActivity) {
-    requestLocationPermission(
-        context,
-    success = { isGranted: Boolean ->
-        if (isGranted) {
-            Permissions.retrieveGPSLocation(context) { coordinates ->
-                initializeWeatherViewModel(coordinates)
+    fun startFragment(activity: FragmentActivity) {
+        if (LocationService.isLocationPermissionGranted(activity)) {
+            loadCurrent(activity)
+        } else {
+            LocationService.requestLocationPermission(activity) { success ->
+                if (success) {
+                    loadCurrent(activity)
+                } else {
+                    loadLast()
+                }
             }
         }
-        else loadLast()
     }
-    )
-    }
-
 }

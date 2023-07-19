@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.activityViewModels
@@ -18,11 +17,7 @@ import com.tonyk.android.weatherapp.R
 import com.tonyk.android.weatherapp.TodayWeatherAdapter
 import com.tonyk.android.weatherapp.databinding.FragmentTodayBinding
 import com.tonyk.android.weatherapp.util.DateConverter
-import com.tonyk.android.weatherapp.util.Permissions
-import com.tonyk.android.weatherapp.util.Permissions.requestLocationPermission
 
-import com.tonyk.android.weatherapp.util.Permissions.retrieveGPSLocation
-import com.tonyk.android.weatherapp.util.Permissions.showToast
 import com.tonyk.android.weatherapp.util.WeatherConverter
 import com.tonyk.android.weatherapp.util.WeatherIconMapper
 import com.tonyk.android.weatherapp.viewmodel.WeatherViewModel
@@ -47,16 +42,16 @@ class TodayFragment: Fragment() {
             FragmentTodayBinding.inflate(inflater, container, false)
 
 
+
         return binding.root }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        weatherViewModel.startedFrag(requireActivity())
+        weatherViewModel.startFragment(requireActivity())
 
-        binding.rcvHourly.layoutManager =
-                LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        binding.rcvHourly.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
             binding.apply {
 
@@ -72,9 +67,6 @@ class TodayFragment: Fragment() {
             viewLifecycleOwner.lifecycleScope.launch {
                 viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                     weatherViewModel.weather.collect { weather ->
-
-
-
 
                         binding.apply {
                             locationTxt.text = weather.resolvedAddress

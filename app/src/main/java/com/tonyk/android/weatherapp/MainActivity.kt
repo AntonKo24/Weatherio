@@ -2,7 +2,6 @@ package com.tonyk.android.weatherapp
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.tonyk.android.weatherapp.util.Permissions
 import dagger.hilt.android.AndroidEntryPoint
 
 
