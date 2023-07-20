@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -19,10 +19,12 @@ import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import com.tonyk.android.weatherapp.LocationsAdapter
 import com.tonyk.android.weatherapp.R
+import com.tonyk.android.weatherapp.data.WeatherioItem
 import com.tonyk.android.weatherapp.databinding.FragmentLocationsBinding
-import com.tonyk.android.weatherapp.viewmodel.LocationsViewModel
+import com.tonyk.android.weatherapp.viewmodel.WeatherViewModel
 
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -31,7 +33,7 @@ class LocationsFragment: Fragment() {
     private val binding
         get () = checkNotNull(_binding)
 
-    private val locationsViewModel : LocationsViewModel by viewModels()
+    private val weatherViewModel : WeatherViewModel by activityViewModels()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -51,18 +53,16 @@ class LocationsFragment: Fragment() {
         }
         binding.rcvLocations.layoutManager = LinearLayoutManager(context)
 
-
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                locationsViewModel.locationsList.collect { list ->
-                    if (list.isNotEmpty()) {
-                        binding.rcvLocations.adapter = LocationsAdapter(list)
+                weatherViewModel.locationsList.collect {
+                    binding.rcvLocations.adapter = LocationsAdapter(it) { item ->
+                        weatherViewModel.initializeWeatherViewModel(item.weather.resolvedAddress, item.address)
+                        findNavController().popBackStack()
                     }
                 }
-
             }
         }
-
         val autocompleteFragment =
             childFragmentManager.findFragmentById(R.id.autocompleteFragment) as AutocompleteSupportFragment
         autocompleteFragment.setPlaceFields(listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG))
@@ -71,14 +71,12 @@ class LocationsFragment: Fragment() {
             override fun onPlaceSelected(place: Place) {
                 val coordinates = "${place.latLng?.latitude ?: 0.0},${place.latLng?.longitude ?: 0.0}"
                 val placeName = place.name ?: "Not found"
-                findNavController().navigate(LocationsFragmentDirections.check(coordinates, placeName))
+                weatherViewModel.setQuery(coordinates, placeName)
             }
             override fun onError(status: Status) {
                 Toast.makeText(requireContext(), "Autocomplete error: ${status.statusMessage}", Toast.LENGTH_SHORT).show()
             }
         })
-
-
     }
     override fun onDestroyView() {
         super.onDestroyView()

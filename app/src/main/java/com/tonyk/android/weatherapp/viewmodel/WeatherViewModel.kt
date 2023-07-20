@@ -12,9 +12,10 @@ import com.tonyk.android.weatherapp.repositories.WeatherApiRepository
 import com.tonyk.android.weatherapp.util.LocationService
 
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalTime
 import javax.inject.Inject
@@ -31,9 +32,13 @@ class WeatherViewModel @Inject constructor(private val weatherApiRepository: Wea
     private val _hoursList = mutableListOf<HourlyWeatherItem>()
     val hoursList: List<HourlyWeatherItem> get() = _hoursList
 
+    private val _locationsList: MutableStateFlow<List<WeatherioItem>> = MutableStateFlow(emptyList())
+    val locationsList: StateFlow<List<WeatherioItem>> = _locationsList
 
+    private val _errorState: MutableSharedFlow<String> = MutableSharedFlow()
+    val errorState: SharedFlow<String> = _errorState
 
-    private fun initializeWeatherViewModel(location : String, address: String) {
+    fun initializeWeatherViewModel(location : String, address: String) {
         viewModelScope.launch {
             try {
                 val weather = weatherApiRepository.fetchWeather(location)
@@ -88,4 +93,20 @@ class WeatherViewModel @Inject constructor(private val weatherApiRepository: Wea
             }
         }
     }
+
+    fun setQuery(location: String, address: String) {
+        viewModelScope.launch {
+            try {
+                val newLocation = WeatherioItem(weatherApiRepository.fetchWeather(location), address)
+                _locationsList.value = _locationsList.value + newLocation
+
+            } catch (e: Exception) {
+                _errorState.emit("$e")
+            }
+        }
+    }
+
+    private val _favoriteLocation: MutableStateFlow<String?> = MutableStateFlow(null)
+    val favoriteLocation: StateFlow<String?> = _favoriteLocation
+
 }

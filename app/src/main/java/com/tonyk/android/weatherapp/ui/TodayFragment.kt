@@ -50,7 +50,6 @@ class TodayFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-
         binding.rcvHourly.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
 
@@ -61,7 +60,6 @@ class TodayFragment: Fragment() {
         binding.manageLocations.setOnClickListener {
                     findNavController().navigate(TodayFragmentDirections.manageLocations())
                 }
-
 
             viewLifecycleOwner.lifecycleScope.launch {
                 viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {

@@ -8,8 +8,9 @@ import com.tonyk.android.weatherapp.data.WeatherioItem
 import com.tonyk.android.weatherapp.databinding.LocationItemBinding
 import com.tonyk.android.weatherapp.util.WeatherConverter
 
-class LocationsViewHolder(private val binding: LocationItemBinding) :
+class LocationsViewHolder(private val binding: LocationItemBinding, private val onLocationItemClick: (WeatherioItem) -> Unit) :
     RecyclerView.ViewHolder(binding.root) {
+
     fun bind(locationListItem: WeatherioItem) {
         binding.apply {
             resolvedAddressTxt.text = locationListItem.weather.resolvedAddress
@@ -17,20 +18,23 @@ class LocationsViewHolder(private val binding: LocationItemBinding) :
             highLowText.text = root.context.getString(R.string.High_Low_temp,
                 WeatherConverter.formatData(locationListItem.weather.days[0].tempmax),
                 WeatherConverter.formatData(locationListItem.weather.days[0].tempmin))
-            root.setOnClickListener {
 
+            // Set click listener for the item view
+            root.setOnClickListener {
+                // Call the onLocationItemClick lambda when an item is clicked
+                onLocationItemClick(locationListItem)
             }
         }
     }
 }
 
-class LocationsAdapter(private val locationsList: List<WeatherioItem>) :
+class LocationsAdapter(private val locationsList: List<WeatherioItem>, private val onLocationItemClick: (WeatherioItem) -> Unit) :
     RecyclerView.Adapter<LocationsViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LocationsViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = LocationItemBinding.inflate(inflater, parent, false)
-        return LocationsViewHolder(binding)
+        return LocationsViewHolder(binding, onLocationItemClick)
     }
 
     override fun onBindViewHolder(holder: LocationsViewHolder, position: Int) {
