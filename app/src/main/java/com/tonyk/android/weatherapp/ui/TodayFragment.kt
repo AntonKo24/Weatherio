@@ -49,54 +49,53 @@ class TodayFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        weatherViewModel.startFragment(requireActivity())
+
 
         binding.rcvHourly.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
-            binding.apply {
 
-                checkForecastBtn.setOnClickListener {
+
+        binding.checkForecastBtn.setOnClickListener {
                     findNavController().navigate(TodayFragmentDirections.showForecast())
                 }
-                manageLocations.setOnClickListener {
+        binding.manageLocations.setOnClickListener {
                     findNavController().navigate(TodayFragmentDirections.manageLocations())
                 }
-            }
 
 
             viewLifecycleOwner.lifecycleScope.launch {
                 viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    weatherViewModel.weather.collect { weather ->
-
+                    weatherViewModel.weather.collect { it ->
                         binding.apply {
-                            locationTxt.text = weather.resolvedAddress
-                            currentConditions.text = weather.currentConditions.conditions
+                            locationTxt.text = it.address
+                            currentConditions.text = it.weather.currentConditions.conditions
                             currentTempTxt.text = getString(
                                 R.string.Temperature,
-                                WeatherConverter.formatData(weather.currentConditions.temp)
+                                WeatherConverter.formatData(it.weather.currentConditions.temp)
                             )
                             currentWindspeedTxt.text = getString(
                                 R.string.WindspeedData,
-                                WeatherConverter.formatData(weather.currentConditions.windspeed)
+                                WeatherConverter.formatData(it.weather.currentConditions.windspeed)
                             )
                             currentHumidityTxt.text = getString(
                                 R.string.HumidityData,
-                                WeatherConverter.formatData(weather.currentConditions.humidity)
+                                WeatherConverter.formatData(it.weather.currentConditions.humidity)
                             )
                             currentPressure.text = getString(
                                 R.string.PressureData,
-                                WeatherConverter.formatData(weather.currentConditions.pressure)
+                                WeatherConverter.formatData(it.weather.currentConditions.pressure)
                             )
-                            descriptionTxt.text = weather.description
-                            todayWeatherPic.load(WeatherIconMapper.getIconResourceId(weather.currentConditions.icon))
-                            if (weather.days.isNotEmpty()) {
+
+                            descriptionTxt.text = it.weather.description
+                            todayWeatherPic.load(WeatherIconMapper.getIconResourceId(it.weather.currentConditions.icon))
+                            if (it.weather.days.isNotEmpty()) {
                                 rcvHourly.adapter = TodayWeatherAdapter(weatherViewModel.hoursList)
                                 todayDateTxt.text =
-                                    DateConverter.formatDate(weather.days[0].datetime)
+                                    DateConverter.formatDate(it.weather.days[0].datetime)
                                 hlTempTxt.text = getString(
                                     R.string.High_Low_temp,
-                                    WeatherConverter.formatData(weather.days[0].tempmax),
-                                    WeatherConverter.formatData(weather.days[0].tempmin)
+                                    WeatherConverter.formatData(it.weather.days[0].tempmax),
+                                    WeatherConverter.formatData(it.weather.days[0].tempmin)
                                 )
                             }
                         }
@@ -110,6 +109,4 @@ class TodayFragment: Fragment() {
         super.onDestroyView()
         _binding = null
     }
-
-
 }

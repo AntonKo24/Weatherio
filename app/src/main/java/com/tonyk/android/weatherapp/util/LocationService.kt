@@ -3,6 +3,8 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
+import android.location.Address
+import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
 import android.widget.Toast
@@ -11,6 +13,8 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
+import java.io.IOException
+import java.util.Locale
 
 object LocationService {
 
@@ -19,12 +23,9 @@ object LocationService {
     return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
 }
 
-
     fun showToast(context: Context, message: String) {
         Toast.makeText(context, message, Toast.LENGTH_LONG).show()
     }
-
-
 
 
     fun isLocationPermissionGranted(context: Context): Boolean {
@@ -41,12 +42,12 @@ object LocationService {
     }
 
     @SuppressLint("MissingPermission")
-    fun getLocation(activity: FragmentActivity, onGPSSuccess: (coordinates: String) -> Unit) {
+    fun getLocationData(activity: FragmentActivity, onGPSSuccess: (coordinates: String, address: String) -> Unit) {
         LocationServices.getFusedLocationProviderClient(activity).getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
             .addOnSuccessListener { location: Location? ->
                 if (location != null) {
                     val coordinates = "${location.latitude},${location.longitude}"
-                    onGPSSuccess.invoke(coordinates)
+                    onGPSSuccess.invoke(coordinates, getLocationName(activity, location.latitude,location.longitude))
                 }
             }
             .addOnFailureListener {
@@ -54,5 +55,21 @@ object LocationService {
             }
     }
 
+    private fun getLocationName(context: Context, latitude: Double, longitude: Double) : String {
+        return try {
+            val addresses: List<Address>? = Geocoder(context, Locale.getDefault()).getFromLocation(latitude, longitude, 1)
+            if (addresses != null && addresses.isNotEmpty()) {
+                val cityName = addresses[0].locality ?: ""
+                val countryName = addresses[0].countryName ?: ""
+                (if (cityName.isNotEmpty()) "$cityName, $countryName" else countryName)
+            } else {
+                showToast(context, "Can't load location name")
+                ("Unknown location")
+            }
+        } catch (e: IOException) {
+            showToast(context, "Error loading location name")
+            ("Unknown location")
+        }
+    }
 }
 

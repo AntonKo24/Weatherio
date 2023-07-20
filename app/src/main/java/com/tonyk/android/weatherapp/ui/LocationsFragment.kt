@@ -21,6 +21,7 @@ import com.tonyk.android.weatherapp.LocationsAdapter
 import com.tonyk.android.weatherapp.R
 import com.tonyk.android.weatherapp.databinding.FragmentLocationsBinding
 import com.tonyk.android.weatherapp.viewmodel.LocationsViewModel
+
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -51,7 +52,6 @@ class LocationsFragment: Fragment() {
         binding.rcvLocations.layoutManager = LinearLayoutManager(context)
 
 
-
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 locationsViewModel.locationsList.collect { list ->
@@ -62,37 +62,24 @@ class LocationsFragment: Fragment() {
 
             }
         }
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                locationsViewModel.errorState.collect { error ->
-                    Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
 
         val autocompleteFragment =
             childFragmentManager.findFragmentById(R.id.autocompleteFragment) as AutocompleteSupportFragment
-
         autocompleteFragment.setPlaceFields(listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG))
         autocompleteFragment.setTypesFilter(listOf(PlaceTypes.CITIES))
         autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(place: Place) {
-                val latitude = place.latLng?.latitude ?: 0.0
-                val longitude = place.latLng?.longitude ?: 0.0
-                val coords = "$latitude,$longitude"
+                val coordinates = "${place.latLng?.latitude ?: 0.0},${place.latLng?.longitude ?: 0.0}"
                 val placeName = place.name ?: "Not found"
-                locationsViewModel.setQuery(coords, placeName)
+                findNavController().navigate(LocationsFragmentDirections.check(coordinates, placeName))
             }
             override fun onError(status: Status) {
                 Toast.makeText(requireContext(), "Autocomplete error: ${status.statusMessage}", Toast.LENGTH_SHORT).show()
             }
         })
 
-        binding.textView.setOnClickListener {
-            findNavController().navigate(LocationsFragmentDirections.backToMain())
-        }
-    }
 
+    }
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

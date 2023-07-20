@@ -28,7 +28,18 @@
         android:label="Hilt_ManageLocationsFragment"
         tools:layout="@layout/fragment_locations">
         <action
-            android:id="@+id/back_to_main"
-            app:destination="@id/todayFragment" />
+            android:id="@+id/check"
+            app:destination="@id/searchFrag" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchFrag"
+        android:name="com.tonyk.android.weatherapp.ui.SearchFragment"
+        android:label="SearchFrag" >
+        <argument
+            android:name="location"
+            app:argType="string" />
+        <argument
+            android:name="placeName"
+            app:argType="string" />
     </fragment>
 </navigation>

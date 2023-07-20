@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.tonyk.android.weatherapp.api.CurrentWeatherItem
 import com.tonyk.android.weatherapp.api.HourlyWeatherItem
 import com.tonyk.android.weatherapp.api.WeatherResponse
+import com.tonyk.android.weatherapp.data.WeatherioItem
 import com.tonyk.android.weatherapp.repositories.WeatherApiRepository
 import com.tonyk.android.weatherapp.util.LocationService
 
@@ -24,18 +25,20 @@ class WeatherViewModel @Inject constructor(private val weatherApiRepository: Wea
 
 ) : ViewModel() {
 
-    private val _weather: MutableStateFlow<WeatherResponse> = MutableStateFlow(WeatherResponse("", emptyList(), CurrentWeatherItem("", 0.0, 0.0, 0.0, "", 0.0, ""), ""))
-    val weather: StateFlow<WeatherResponse> = _weather.asStateFlow()
+    private val _weather: MutableStateFlow<WeatherioItem> = MutableStateFlow(WeatherioItem(WeatherResponse("", emptyList(), CurrentWeatherItem("", 0.0, 0.0, 0.0, "", 0.0, ""), ""), ""))
+    val weather: StateFlow<WeatherioItem> = _weather
 
     private val _hoursList = mutableListOf<HourlyWeatherItem>()
     val hoursList: List<HourlyWeatherItem> get() = _hoursList
 
-    private fun initializeWeatherViewModel(location : String) {
+
+
+    private fun initializeWeatherViewModel(location : String, address: String) {
         viewModelScope.launch {
             try {
-                val items = weatherApiRepository.fetchWeather(location)
-                _weather.value = items
-                processHourlyForecast(items)
+                val weather = weatherApiRepository.fetchWeather(location)
+                _weather.value = WeatherioItem(weather, address)
+                processHourlyForecast(weather)
             }
             catch (ex: Exception) {
                 Log.d("Exception", "$ex")
@@ -65,14 +68,13 @@ class WeatherViewModel @Inject constructor(private val weatherApiRepository: Wea
     }
 
     private fun loadLast() {
-        initializeWeatherViewModel("london")
+        initializeWeatherViewModel("london", "London")
     }
     private fun loadCurrent(activity: FragmentActivity){
-        LocationService.getLocation(activity) { coordinates ->
-            initializeWeatherViewModel(coordinates)
+        LocationService.getLocationData(activity) { coordinates, address ->
+            initializeWeatherViewModel(coordinates, address)
         }
     }
-
     fun startFragment(activity: FragmentActivity) {
         if (LocationService.isLocationPermissionGranted(activity)) {
             loadCurrent(activity)
