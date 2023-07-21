@@ -297,7 +297,7 @@
                 app:srcCompat="@drawable/ic_add" />
 
             <ImageView
-                android:id="@+id/imageView5"
+                android:id="@+id/check_button"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 android:layout_marginEnd="16dp"
@@ -305,18 +305,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/manageLocations"
                 app:srcCompat="@drawable/ic_settings" />
-
-            <TextView
-                android:id="@+id/TestREFRESH"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                android:background="@drawable/ic_refresh"
-                app:layout_constraintBottom_toTopOf="@+id/todayDateTxt"
-                app:layout_constraintEnd_toStartOf="@+id/imageView5"
-                app:layout_constraintStart_toEndOf="@+id/todayTxt"
-                app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

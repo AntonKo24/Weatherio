@@ -9,5 +9,7 @@ class WeatherApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         Places.initialize(applicationContext, "AIzaSyDrFYzrroCsJ8MiMP4rlg-0PU1lfKTIXkM")
+
+
     }
 }

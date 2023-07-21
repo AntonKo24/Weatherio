@@ -12,19 +12,43 @@
         tools:layout="@layout/fragment_today" >
         <action
             android:id="@+id/show_forecast"
-            app:destination="@id/forecastFragment" />
+            app:destination="@id/forecastFragment"
+            app:enterAnim="@anim/nav_slide_in_right"
+            app:exitAnim="@anim/nav_slide_out_left"
+            app:popEnterAnim="@anim/nav_slide_in_left"
+            app:popExitAnim="@anim/nav_slide_out_right" />
         <action
             android:id="@+id/manage_locations"
-            app:destination="@id/hilt_ManageLocationsFragment" />
+            app:destination="@id/hilt_ManageLocationsFragment"
+            app:enterAnim="@anim/nav_slide_in_left"
+            app:exitAnim="@anim/nav_slide_out_right"
+            app:popExitAnim="@anim/nav_slide_out_left"
+            app:popEnterAnim="@anim/nav_slide_in_right"/>
     </fragment>
     <fragment
         android:id="@+id/forecastFragment"
         android:name="com.tonyk.android.weatherapp.ui.ForecastFragment"
         android:label="ForecastFragment"
-        tools:layout="@layout/fragment_forecast"/>
+        tools:layout="@layout/fragment_forecast">
+
+    </fragment>
     <fragment
         android:id="@+id/hilt_ManageLocationsFragment"
         android:name="com.tonyk.android.weatherapp.ui.LocationsFragment"
         android:label="Hilt_ManageLocationsFragment"
-        tools:layout="@layout/fragment_locations"/>
+        tools:layout="@layout/fragment_locations"
+        >
+        <action
+            android:id="@+id/search_result"
+            app:destination="@id/searchDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchDetailsFragment"
+        android:name="com.tonyk.android.weatherapp.ui.SearchDetailsFragment"
+        android:label="SearchDetailsFragment" >
+        <argument
+            android:name="location"
+            app:argType="string" />
+        <argument android:name="address" />
+    </fragment>
 </navigation>

@@ -65,16 +65,17 @@ class LocationsFragment: Fragment() {
         }
         val autocompleteFragment =
             childFragmentManager.findFragmentById(R.id.autocompleteFragment) as AutocompleteSupportFragment
-        autocompleteFragment.setPlaceFields(listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG))
+        autocompleteFragment.setPlaceFields(listOf(Place.Field.ID, Place.Field.ADDRESS, Place.Field.LAT_LNG))
         autocompleteFragment.setTypesFilter(listOf(PlaceTypes.CITIES))
         autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(place: Place) {
                 val coordinates = "${place.latLng?.latitude ?: 0.0},${place.latLng?.longitude ?: 0.0}"
-                val placeName = place.name ?: "Not found"
-                weatherViewModel.setQuery(coordinates, placeName)
+                val address = place.address ?: ""
+                weatherViewModel.setQuery(coordinates, address)
+                findNavController().navigate(LocationsFragmentDirections.searchResult(coordinates, address))
             }
             override fun onError(status: Status) {
-                Toast.makeText(requireContext(), "Autocomplete error: ${status.statusMessage}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Location not picked", Toast.LENGTH_SHORT).show()
             }
         })
     }

@@ -13,15 +13,14 @@ class LocationsViewHolder(private val binding: LocationItemBinding, private val 
 
     fun bind(locationListItem: WeatherioItem) {
         binding.apply {
-            resolvedAddressTxt.text = locationListItem.weather.resolvedAddress
+            resolvedAddressTxt.text = locationListItem.address
             tempText.text = root.context.getString(R.string.Temperature, WeatherConverter.formatData(locationListItem.weather.currentConditions.temp))
             highLowText.text = root.context.getString(R.string.High_Low_temp,
                 WeatherConverter.formatData(locationListItem.weather.days[0].tempmax),
                 WeatherConverter.formatData(locationListItem.weather.days[0].tempmin))
 
-            // Set click listener for the item view
+
             root.setOnClickListener {
-                // Call the onLocationItemClick lambda when an item is clicked
                 onLocationItemClick(locationListItem)
             }
         }
