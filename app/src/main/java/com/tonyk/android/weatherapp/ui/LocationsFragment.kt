@@ -19,6 +19,7 @@ import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import com.tonyk.android.weatherapp.LocationsAdapter
 import com.tonyk.android.weatherapp.R
+import com.tonyk.android.weatherapp.data.LocationItem
 import com.tonyk.android.weatherapp.data.WeatherioItem
 import com.tonyk.android.weatherapp.databinding.FragmentLocationsBinding
 import com.tonyk.android.weatherapp.viewmodel.WeatherViewModel
@@ -57,7 +58,7 @@ class LocationsFragment: Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 weatherViewModel.locationsList.collect {
                     binding.rcvLocations.adapter = LocationsAdapter(it) { item ->
-                        weatherViewModel.initializeWeatherViewModel(item.weather.resolvedAddress, item.address)
+                        weatherViewModel.initializeWeatherViewModel( item.location )
                         findNavController().popBackStack()
                     }
                 }
@@ -65,13 +66,15 @@ class LocationsFragment: Fragment() {
         }
         val autocompleteFragment =
             childFragmentManager.findFragmentById(R.id.autocompleteFragment) as AutocompleteSupportFragment
-        autocompleteFragment.setPlaceFields(listOf(Place.Field.ID, Place.Field.ADDRESS, Place.Field.LAT_LNG))
+        autocompleteFragment.setPlaceFields(listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG))
         autocompleteFragment.setTypesFilter(listOf(PlaceTypes.CITIES))
         autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(place: Place) {
                 val coordinates = "${place.latLng?.latitude ?: 0.0},${place.latLng?.longitude ?: 0.0}"
-                val address = place.address ?: ""
-                weatherViewModel.setQuery(coordinates, address)
+                val address = place.name ?: ""
+
+                weatherViewModel.setQuery(LocationItem(coordinates, address))
+
                 findNavController().navigate(LocationsFragmentDirections.searchResult(coordinates, address))
             }
             override fun onError(status: Status) {

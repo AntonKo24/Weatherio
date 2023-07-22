@@ -19,6 +19,7 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest
 import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse
 import com.google.android.libraries.places.api.net.PlacesClient
+import com.tonyk.android.weatherapp.data.LocationItem
 import java.io.IOException
 import java.lang.reflect.Field
 import java.util.Locale
@@ -44,12 +45,13 @@ object LocationService {
         requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
     }
     @SuppressLint("MissingPermission")
-    fun getLocationData(activity: FragmentActivity, onGPSSuccess: (coordinates: String, address: String) -> Unit) {
+    fun getLocationData(activity: FragmentActivity, onGPSSuccess: (locationItem : LocationItem) -> Unit) {
         LocationServices.getFusedLocationProviderClient(activity).getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
-            .addOnSuccessListener { location: Location? ->
-                if (location != null) {
-                    val coordinates = "${location.latitude},${location.longitude}"
-                    onGPSSuccess.invoke(coordinates, getLocationName(activity, location.latitude,location.longitude))
+            .addOnSuccessListener { it: Location? ->
+                if (it != null) {
+                    val coordinates = "${it.latitude},${it.longitude}"
+                    val address = getLocationName(activity, it.latitude,it.longitude)
+                    onGPSSuccess.invoke(LocationItem(coordinates, address))
                 }
             }
             .addOnFailureListener {

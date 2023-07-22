@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
 import com.tonyk.android.weatherapp.R
 import com.tonyk.android.weatherapp.TodayWeatherAdapter
+import com.tonyk.android.weatherapp.data.LocationItem
 import com.tonyk.android.weatherapp.databinding.FragmentTodayBinding
 import com.tonyk.android.weatherapp.util.DateConverter
 
@@ -52,7 +53,7 @@ class SearchDetailsFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        weatherViewModel.initializeWeatherViewModel(args.location, args.address)
+        weatherViewModel.initializeWeatherViewModel(LocationItem(args.location, args.address))
 
         binding.rcvHourly.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
@@ -70,7 +71,7 @@ class SearchDetailsFragment: Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 weatherViewModel.weather.collect { it ->
                     binding.apply {
-                        locationTxt.text = it.address
+                        locationTxt.text = it.location.address
                         currentConditions.text = it.weather.currentConditions.conditions
                         currentTempTxt.text = getString(
                             R.string.Temperature,

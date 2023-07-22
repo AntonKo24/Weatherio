@@ -48,7 +48,7 @@ class ForecastFragment: Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 weatherViewModel.weather.collect { it ->
                     binding.apply {
-                        locationText.text = it.address
+                        locationText.text = it.location.address
                         if (it.weather.days.isNotEmpty()) {
                             tmrwTemp.text = getString(
                                 R.string.High_Low_temp,

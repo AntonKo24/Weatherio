@@ -65,7 +65,7 @@ class TodayFragment: Fragment() {
                 viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                     weatherViewModel.weather.collect { it ->
                         binding.apply {
-                            locationTxt.text = it.address
+                            locationTxt.text = it.location.address
                             currentConditions.text = it.weather.currentConditions.conditions
                             currentTempTxt.text = getString(
                                 R.string.Temperature,

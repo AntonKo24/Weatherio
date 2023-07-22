@@ -7,7 +7,9 @@ import androidx.lifecycle.viewModelScope
 import com.tonyk.android.weatherapp.api.CurrentWeatherItem
 import com.tonyk.android.weatherapp.api.HourlyWeatherItem
 import com.tonyk.android.weatherapp.api.WeatherResponse
+import com.tonyk.android.weatherapp.data.LocationItem
 import com.tonyk.android.weatherapp.data.WeatherioItem
+import com.tonyk.android.weatherapp.database.LocationRepository
 import com.tonyk.android.weatherapp.repositories.WeatherApiRepository
 import com.tonyk.android.weatherapp.util.LocationService
 
@@ -16,6 +18,9 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.forEach
 import kotlinx.coroutines.launch
 import java.time.LocalTime
 import javax.inject.Inject
@@ -26,7 +31,7 @@ class WeatherViewModel @Inject constructor(private val weatherApiRepository: Wea
 
 ) : ViewModel() {
 
-    private val _weather: MutableStateFlow<WeatherioItem> = MutableStateFlow(WeatherioItem(WeatherResponse("", emptyList(), CurrentWeatherItem("", 0.0, 0.0, 0.0, "", 0.0, ""), ""), ""))
+    private val _weather: MutableStateFlow<WeatherioItem> = MutableStateFlow(WeatherioItem(WeatherResponse("", emptyList(), CurrentWeatherItem("", 0.0, 0.0, 0.0, "", 0.0, ""), ""), LocationItem("", "")))
     val weather: StateFlow<WeatherioItem> = _weather
 
     private val _hoursList = mutableListOf<HourlyWeatherItem>()
@@ -39,13 +44,37 @@ class WeatherViewModel @Inject constructor(private val weatherApiRepository: Wea
     val errorState: SharedFlow<String> = _errorState
 
 
+    private val locationRepository = LocationRepository.get()
+
+    private val _locations: MutableStateFlow<List<LocationItem>> = MutableStateFlow(emptyList())
+    val locations: StateFlow<List<LocationItem>>
+        get() = _locations.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            locationRepository.getLocations().collect {
+               it.forEach { val weather = weatherApiRepository.fetchWeather(it.coordinates)
+                   val location = it
+                   _locationsList.value = _locationsList.value + WeatherioItem(weather,location)  }
+
+            }
+
+        }
+    }
+
+    private suspend fun addLocation(location: LocationItem) {
+        locationRepository.addLocation(location) }
 
 
-    fun initializeWeatherViewModel(location : String, address: String) {
+
+
+
+
+    fun initializeWeatherViewModel(location : LocationItem) {
         viewModelScope.launch {
             try {
-                val weather = weatherApiRepository.fetchWeather(location)
-                _weather.value = WeatherioItem(weather, address)
+                val weather = weatherApiRepository.fetchWeather(location.coordinates)
+                _weather.value = WeatherioItem(weather, location)
                 processHourlyForecast(weather)
             }
             catch (ex: Exception) {
@@ -76,11 +105,11 @@ class WeatherViewModel @Inject constructor(private val weatherApiRepository: Wea
     }
 
     private fun loadLast() {
-        initializeWeatherViewModel("london", "London")
+        initializeWeatherViewModel(LocationItem("London", "London"))
     }
     private fun loadCurrent(activity: FragmentActivity){
-        LocationService.getLocationData(activity) { coordinates, address ->
-            initializeWeatherViewModel(coordinates, address)
+        LocationService.getLocationData(activity) { it ->
+            initializeWeatherViewModel(it)
         }
     }
     fun startFragment(activity: FragmentActivity) {
@@ -97,10 +126,11 @@ class WeatherViewModel @Inject constructor(private val weatherApiRepository: Wea
         }
     }
 
-    fun setQuery(location: String, address: String) {
+    fun setQuery(location: LocationItem) {
         viewModelScope.launch {
             try {
-                val newLocation = WeatherioItem(weatherApiRepository.fetchWeather(location), address)
+                addLocation(location)
+                val newLocation = WeatherioItem(weatherApiRepository.fetchWeather(location.coordinates), location)
                 _locationsList.value = _locationsList.value + newLocation
             } catch (e: Exception) {
                 _errorState.emit("$e")

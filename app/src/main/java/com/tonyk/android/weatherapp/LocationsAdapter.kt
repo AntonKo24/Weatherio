@@ -13,7 +13,7 @@ class LocationsViewHolder(private val binding: LocationItemBinding, private val 
 
     fun bind(locationListItem: WeatherioItem) {
         binding.apply {
-            resolvedAddressTxt.text = locationListItem.address
+            resolvedAddressTxt.text = locationListItem.location.address
             tempText.text = root.context.getString(R.string.Temperature, WeatherConverter.formatData(locationListItem.weather.currentConditions.temp))
             highLowText.text = root.context.getString(R.string.High_Low_temp,
                 WeatherConverter.formatData(locationListItem.weather.days[0].tempmax),
