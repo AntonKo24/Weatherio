@@ -5,21 +5,95 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
+import coil.load
+import com.tonyk.android.weatherapp.R
+import com.tonyk.android.weatherapp.TodayWeatherAdapter
+import com.tonyk.android.weatherapp.databinding.FragmentTodayBinding
+import com.tonyk.android.weatherapp.util.DateConverter
+import com.tonyk.android.weatherapp.util.WeatherConverter
+import com.tonyk.android.weatherapp.util.WeatherIconMapper
+import com.tonyk.android.weatherapp.viewmodel.WeatherViewModel
+import kotlinx.coroutines.launch
 
 
-abstract class BaseFragment<VB : ViewBinding> : Fragment() {
-    private var _binding: VB? = null
-    val binding get() = _binding!!
+abstract class BaseFragment : Fragment() {
+
+
+    private var _binding: FragmentTodayBinding? = null
+    protected val binding: FragmentTodayBinding
+        get() = checkNotNull(_binding)
+    abstract fun inflateBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentTodayBinding
+    abstract fun getWeatherViewModel(): WeatherViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = getViewBinding()
+        _binding = inflateBinding(inflater, container)
         return binding.root
     }
 
-    abstract fun getViewBinding(): VB
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        observeWeatherData(getWeatherViewModel())
+    }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+    private fun observeWeatherData(weatherViewModel: WeatherViewModel) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                weatherViewModel.weather.collect { it ->
+                    binding.apply {
+                        locationTxt.text = it.location.address
+                        currentConditions.text = it.weather.currentConditions.conditions
+                        currentTempTxt.text = getString(
+                            R.string.Temperature,
+                            WeatherConverter.formatData(it.weather.currentConditions.temp)
+                        )
+                        currentWindspeedTxt.text = getString(
+                            R.string.WindspeedData,
+                            WeatherConverter.formatData(it.weather.currentConditions.windspeed)
+                        )
+                        currentHumidityTxt.text = getString(
+                            R.string.HumidityData,
+                            WeatherConverter.formatData(it.weather.currentConditions.humidity)
+                        )
+                        currentPressure.text = getString(
+                            R.string.PressureData,
+                            WeatherConverter.formatData(it.weather.currentConditions.pressure)
+                        )
+                        rcvHourly.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+
+
+
+                        descriptionTxt.text = it.weather.description
+                        todayWeatherPic.load(WeatherIconMapper.getIconResourceId(it.weather.currentConditions.icon))
+                        if (it.weather.days.isNotEmpty()) {
+                            rcvHourly.adapter = TodayWeatherAdapter(weatherViewModel.hoursList)
+                            todayDateTxt.text = DateConverter.formatDate(it.weather.days[0].datetime)
+                            hlTempTxt.text = getString(
+                                R.string.High_Low_temp,
+                                WeatherConverter.formatData(it.weather.days[0].tempmax),
+                                WeatherConverter.formatData(it.weather.days[0].tempmin)
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
+
+
+

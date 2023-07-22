@@ -25,86 +25,28 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class TodayFragment: Fragment() {
-    private var _binding: FragmentTodayBinding? = null
-    private val binding
-        get () = checkNotNull(_binding)
+class TodayFragment : BaseFragment() {
 
-    private val weatherViewModel : WeatherViewModel by activityViewModels()
+    private val todayWeatherViewModel: WeatherViewModel by activityViewModels()
 
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        _binding =
-            FragmentTodayBinding.inflate(inflater, container, false)
-
-
-
-        return binding.root }
-
-
+    override fun inflateBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentTodayBinding {
+        return FragmentTodayBinding.inflate(inflater, container, false)
+    }
+    override fun getWeatherViewModel(): WeatherViewModel {
+        return todayWeatherViewModel
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-        binding.rcvHourly.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-
-
-
         binding.checkForecastBtn.setOnClickListener {
-                    findNavController().navigate(TodayFragmentDirections.showForecast())
-                }
-        binding.manageLocations.setOnClickListener {
-                    findNavController().navigate(TodayFragmentDirections.manageLocations())
-                }
-
-            viewLifecycleOwner.lifecycleScope.launch {
-                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    weatherViewModel.weather.collect { it ->
-                        binding.apply {
-                            locationTxt.text = it.location.address
-                            currentConditions.text = it.weather.currentConditions.conditions
-                            currentTempTxt.text = getString(
-                                R.string.Temperature,
-                                WeatherConverter.formatData(it.weather.currentConditions.temp)
-                            )
-                            currentWindspeedTxt.text = getString(
-                                R.string.WindspeedData,
-                                WeatherConverter.formatData(it.weather.currentConditions.windspeed)
-                            )
-                            currentHumidityTxt.text = getString(
-                                R.string.HumidityData,
-                                WeatherConverter.formatData(it.weather.currentConditions.humidity)
-                            )
-                            currentPressure.text = getString(
-                                R.string.PressureData,
-                                WeatherConverter.formatData(it.weather.currentConditions.pressure)
-                            )
-
-                            descriptionTxt.text = it.weather.description
-                            todayWeatherPic.load(WeatherIconMapper.getIconResourceId(it.weather.currentConditions.icon))
-                            if (it.weather.days.isNotEmpty()) {
-                                rcvHourly.adapter = TodayWeatherAdapter(weatherViewModel.hoursList)
-                                todayDateTxt.text =
-                                    DateConverter.formatDate(it.weather.days[0].datetime)
-                                hlTempTxt.text = getString(
-                                    R.string.High_Low_temp,
-                                    WeatherConverter.formatData(it.weather.days[0].tempmax),
-                                    WeatherConverter.formatData(it.weather.days[0].tempmin)
-                                )
-                            }
-                        }
-                    }
-                }
-            }
+            findNavController().navigate(TodayFragmentDirections.showForecast())
         }
-
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+        binding.manageLocations.setOnClickListener {
+            findNavController().navigate(TodayFragmentDirections.manageLocations())
+        }
     }
 }
+
+
+
+
