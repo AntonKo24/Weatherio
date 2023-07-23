@@ -4,11 +4,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tonyk.android.weatherapp.api.WeatherResponse
+import com.tonyk.android.weatherapp.data.LocationItem
 import com.tonyk.android.weatherapp.data.WeatherioItem
 import com.tonyk.android.weatherapp.databinding.LocationItemBinding
 import com.tonyk.android.weatherapp.util.WeatherConverter
 
-class LocationsViewHolder(private val binding: LocationItemBinding, private val onLocationItemClick: (WeatherioItem) -> Unit) :
+class LocationsViewHolder(private val binding: LocationItemBinding, private val onLocationItemClick: (WeatherioItem) -> Unit, private val onLongItemClick: (LocationItem) -> Unit) :
     RecyclerView.ViewHolder(binding.root) {
 
     fun bind(locationListItem: WeatherioItem) {
@@ -23,17 +24,21 @@ class LocationsViewHolder(private val binding: LocationItemBinding, private val 
             root.setOnClickListener {
                 onLocationItemClick(locationListItem)
             }
+            root.setOnLongClickListener {
+                onLongItemClick(locationListItem.location)
+                true // or false, depending on whether you want to consume the event or not
+            }
         }
     }
 }
 
-class LocationsAdapter(private val locationsList: List<WeatherioItem>, private val onLocationItemClick: (WeatherioItem) -> Unit) :
+class LocationsAdapter(private val locationsList: List<WeatherioItem>, private val onLocationItemClick: (WeatherioItem) -> Unit, private val onLongItemClick: (LocationItem) -> Unit) :
     RecyclerView.Adapter<LocationsViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LocationsViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = LocationItemBinding.inflate(inflater, parent, false)
-        return LocationsViewHolder(binding, onLocationItemClick)
+        return LocationsViewHolder(binding, onLocationItemClick, onLongItemClick)
     }
 
     override fun onBindViewHolder(holder: LocationsViewHolder, position: Int) {

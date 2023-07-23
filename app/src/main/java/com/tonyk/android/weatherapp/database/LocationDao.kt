@@ -1,6 +1,7 @@
 package com.tonyk.android.weatherapp.database
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.tonyk.android.weatherapp.data.LocationItem
@@ -15,5 +16,8 @@ interface LocationDao {
 
     @Insert
     suspend fun addLocation(location: LocationItem)
+
+    @Delete
+    suspend fun deleteLocation(location: LocationItem)
 
 }

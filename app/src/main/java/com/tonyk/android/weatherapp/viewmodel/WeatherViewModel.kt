@@ -61,9 +61,14 @@ class WeatherViewModel @Inject constructor(private val weatherApiRepository: Wea
 
         }
     }
-
-    private suspend fun addLocation(location: LocationItem) {
-        locationRepository.addLocation(location) }
+    fun deleteLocation(location: LocationItem) {
+        viewModelScope.launch {
+            locationRepository.deleteLocation(location)
+            _locationsList.value = _locationsList.value.filter { it.location != location }
+        }
+    }
+     fun addLocation(location: LocationItem) { viewModelScope.launch {
+        locationRepository.addLocation(location)  } }
 
 
 
@@ -126,17 +131,7 @@ class WeatherViewModel @Inject constructor(private val weatherApiRepository: Wea
         }
     }
 
-    fun setQuery(location: LocationItem) {
-        viewModelScope.launch {
-            try {
-                addLocation(location)
-                val newLocation = WeatherioItem(weatherApiRepository.fetchWeather(location.coordinates), location)
-                _locationsList.value = _locationsList.value + newLocation
-            } catch (e: Exception) {
-                _errorState.emit("$e")
-            }
-        }
-    }
+
 
 
 

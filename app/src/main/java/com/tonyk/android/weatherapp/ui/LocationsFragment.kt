@@ -57,10 +57,10 @@ class LocationsFragment: Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 weatherViewModel.locationsList.collect {
-                    binding.rcvLocations.adapter = LocationsAdapter(it) { item ->
-                        weatherViewModel.initializeWeatherViewModel( item.location )
+                    binding.rcvLocations.adapter = LocationsAdapter(it, { item ->
+
                         findNavController().popBackStack()
-                    }
+                    } , { item -> weatherViewModel.deleteLocation(item)})
                 }
             }
         }
@@ -73,7 +73,7 @@ class LocationsFragment: Fragment() {
                 val coordinates = "${place.latLng?.latitude ?: 0.0},${place.latLng?.longitude ?: 0.0}"
                 val address = place.name ?: ""
 
-                weatherViewModel.setQuery(LocationItem(coordinates, address))
+                weatherViewModel.addLocation(LocationItem(coordinates, address))
 
                 findNavController().navigate(LocationsFragmentDirections.searchResult(coordinates, address))
             }

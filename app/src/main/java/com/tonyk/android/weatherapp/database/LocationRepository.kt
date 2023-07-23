@@ -26,6 +26,10 @@ class LocationRepository private constructor(context: Context) {
         database.locationDao().addLocation(location)
     }
 
+    suspend fun deleteLocation(location: LocationItem) {
+        database.locationDao().deleteLocation(location)
+    }
+
 
 
     companion object {
