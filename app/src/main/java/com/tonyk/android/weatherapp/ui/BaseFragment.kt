@@ -79,6 +79,8 @@ abstract class BaseFragment : Fragment() {
 
                         descriptionTxt.text = it.weather.description
                         todayWeatherPic.load(WeatherIconMapper.getIconResourceId(it.weather.currentConditions.icon))
+
+
                         if (it.weather.days.isNotEmpty()) {
                             rcvHourly.adapter = TodayWeatherAdapter(weatherViewModel.hoursList)
                             todayDateTxt.text = DateConverter.formatDate(it.weather.days[0].datetime)

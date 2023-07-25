@@ -63,6 +63,12 @@ class SearchDetailsFragment: Fragment() {
             findNavController().navigate(TodayFragmentDirections.showForecast())
         }
         binding.manageLocations.setOnClickListener {
+
+            findNavController().popBackStack()
+        }
+
+        binding.checkButton.setOnClickListener {
+            weatherViewModel.addLocation(LocationItem(args.location, args.address))
             findNavController().popBackStack()
         }
 

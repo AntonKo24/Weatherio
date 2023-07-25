@@ -54,16 +54,23 @@ class LocationsFragment: Fragment() {
         }
         binding.rcvLocations.layoutManager = LinearLayoutManager(context)
 
+        val adapter = LocationsAdapter({ item ->
+            weatherViewModel.setWeather(item)
+            findNavController().popBackStack()
+        }, { item ->
+            weatherViewModel.deleteLocation(item.location)
+        })
+
+        binding.rcvLocations.adapter = adapter
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 weatherViewModel.locationsList.collect {
-                    binding.rcvLocations.adapter = LocationsAdapter(it, { item ->
-
-                        findNavController().popBackStack()
-                    } , { item -> weatherViewModel.deleteLocation(item)})
+                    adapter.submitList(it)
                 }
             }
         }
+
         val autocompleteFragment =
             childFragmentManager.findFragmentById(R.id.autocompleteFragment) as AutocompleteSupportFragment
         autocompleteFragment.setPlaceFields(listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG))
@@ -73,9 +80,11 @@ class LocationsFragment: Fragment() {
                 val coordinates = "${place.latLng?.latitude ?: 0.0},${place.latLng?.longitude ?: 0.0}"
                 val address = place.name ?: ""
 
-                weatherViewModel.addLocation(LocationItem(coordinates, address))
-
-                findNavController().navigate(LocationsFragmentDirections.searchResult(coordinates, address))
+                if (weatherViewModel.locationsList.value.none { it.location == LocationItem(coordinates, address) }) {
+                    findNavController().navigate(LocationsFragmentDirections.searchResult(coordinates, address))
+                } else {
+                    Toast.makeText(requireContext(), "Location is already in the list", Toast.LENGTH_LONG).show()
+                }
             }
             override fun onError(status: Status) {
                 Toast.makeText(requireContext(), "Location not picked", Toast.LENGTH_SHORT).show()

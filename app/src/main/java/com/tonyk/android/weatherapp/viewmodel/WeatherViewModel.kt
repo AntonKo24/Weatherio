@@ -12,15 +12,16 @@ import com.tonyk.android.weatherapp.data.WeatherioItem
 import com.tonyk.android.weatherapp.database.LocationRepository
 import com.tonyk.android.weatherapp.repositories.WeatherApiRepository
 import com.tonyk.android.weatherapp.util.LocationService
-
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.forEach
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import java.time.LocalTime
 import javax.inject.Inject
@@ -43,44 +44,53 @@ class WeatherViewModel @Inject constructor(private val weatherApiRepository: Wea
     private val _errorState: MutableSharedFlow<String> = MutableSharedFlow()
     val errorState: SharedFlow<String> = _errorState
 
+    private val _locos: MutableStateFlow<List<LocationItem>> = MutableStateFlow(emptyList())
+    val locos: StateFlow<List<LocationItem>> = _locos
+
 
     private val locationRepository = LocationRepository.get()
 
-    private val _locations: MutableStateFlow<List<LocationItem>> = MutableStateFlow(emptyList())
-    val locations: StateFlow<List<LocationItem>>
-        get() = _locations.asStateFlow()
 
-    init {
+
+    fun getList() {
         viewModelScope.launch {
-            locationRepository.getLocations().collect {
-               it.forEach { val weather = weatherApiRepository.fetchWeather(it.coordinates)
-                   val location = it
-                   _locationsList.value = _locationsList.value + WeatherioItem(weather,location)  }
-
+            locationRepository.getLocations().collect { newLocations ->
+                _locos.value = newLocations
+                val existingLocations = _locationsList.value.map { it.location }.toSet()
+                newLocations.forEach { newLocationItem ->
+                    if (!existingLocations.contains(newLocationItem)) {
+                        val weather = weatherApiRepository.fetchWeather(newLocationItem.coordinates)
+                        _locationsList.value = _locationsList.value + WeatherioItem(weather, newLocationItem)
+                    }
+                }
             }
-
         }
     }
+
+    fun setWeather(weather : WeatherioItem) {
+        processHourlyForecast(weather.weather)
+        _weather.value = weather
+    }
+
+
+    fun addLocation(location: LocationItem) {
+        viewModelScope.launch {
+            locationRepository.addLocation(location)
+        }
+    }
+
     fun deleteLocation(location: LocationItem) {
         viewModelScope.launch {
             locationRepository.deleteLocation(location)
             _locationsList.value = _locationsList.value.filter { it.location != location }
         }
     }
-     fun addLocation(location: LocationItem) { viewModelScope.launch {
-        locationRepository.addLocation(location)  } }
-
-
-
-
-
 
     fun initializeWeatherViewModel(location : LocationItem) {
         viewModelScope.launch {
             try {
                 val weather = weatherApiRepository.fetchWeather(location.coordinates)
-                _weather.value = WeatherioItem(weather, location)
-                processHourlyForecast(weather)
+                setWeather(WeatherioItem(weather, location))
             }
             catch (ex: Exception) {
                 Log.d("Exception", "$ex")
@@ -89,6 +99,7 @@ class WeatherViewModel @Inject constructor(private val weatherApiRepository: Wea
     }
 
     private fun processHourlyForecast(weatherData: WeatherResponse) {
+        _hoursList.clear()
         val hoursToAdd = mutableListOf<HourlyWeatherItem>()
         var remainingHours = 24
         var dayIndex = 0
@@ -109,9 +120,15 @@ class WeatherViewModel @Inject constructor(private val weatherApiRepository: Wea
         _hoursList.addAll(hoursToAdd)
     }
 
+
     private fun loadLast() {
-        initializeWeatherViewModel(LocationItem("London", "London"))
+        viewModelScope.launch {
+            _locationsList.filter { it.isNotEmpty() }.first().let { locations ->
+                    _weather.value = locations.first()
+            }
+        }
     }
+
     private fun loadCurrent(activity: FragmentActivity){
         LocationService.getLocationData(activity) { it ->
             initializeWeatherViewModel(it)
@@ -125,16 +142,9 @@ class WeatherViewModel @Inject constructor(private val weatherApiRepository: Wea
                 if (success) {
                     loadCurrent(activity)
                 } else {
-                    loadLast()
+                            loadLast()
                 }
             }
         }
     }
-
-
-
-
-
-
-
 }
