@@ -62,8 +62,6 @@ object LocationService {
                 .addOnFailureListener {
                     showToast(activity, "NO PERMISSION OR GPS NOT ON")
                 }
-
-
     }
     private fun getLocationName(context: Context, latitude: Double, longitude: Double) : String {
         return try {

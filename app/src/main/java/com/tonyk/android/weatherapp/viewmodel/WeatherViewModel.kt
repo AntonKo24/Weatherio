@@ -132,29 +132,25 @@ class WeatherViewModel @Inject constructor(private val weatherApiRepository: Wea
     }
 
      fun loadCurrent(activity: FragmentActivity){
-        LocationService.getLocationData(activity) {
-            initializeWeatherViewModel(it)
+        if (LocationService.isGPSEnabled(activity)) {
+            LocationService.getLocationData(activity) {
+                initializeWeatherViewModel(it)
+            }
+        }
+        else {
+            loadLast()
+            LocationService.showGPSAlertDialog(activity)
         }
     }
 
     fun startFragment(activity: FragmentActivity) {
         getList()
         if (LocationService.isLocationPermissionGranted(activity)) {
-            if (LocationService.isGPSEnabled(activity)) {
-                loadCurrent(activity)
-            } else {
-                loadLast()
-                LocationService.showGPSAlertDialog(activity)
-            }
+            loadCurrent(activity)
         } else {
             LocationService.requestLocationPermission(activity) { success ->
                 if (success) {
-                    if (LocationService.isGPSEnabled(activity)) {
-                        loadCurrent(activity)
-                    } else {
-                        loadLast()
-                        LocationService.showGPSAlertDialog(activity)
-                    }
+                    loadCurrent(activity)
                 } else {
                     loadLast()
                 }

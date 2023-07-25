@@ -57,7 +57,8 @@ class SearchDetailsFragment: Fragment() {
 
         binding.rcvHourly.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
-
+        binding.checkButton.load(R.drawable.ic_check)
+        binding.manageLocations.load(R.drawable.back)
 
         binding.checkForecastBtn.setOnClickListener {
             findNavController().navigate(TodayFragmentDirections.showForecast())
