@@ -7,12 +7,15 @@ import android.view.ViewGroup
 
 
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 
 import androidx.navigation.fragment.findNavController
 
 import com.tonyk.android.weatherapp.databinding.FragmentTodayBinding
 import com.tonyk.android.weatherapp.viewmodel.WeatherViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
@@ -29,7 +32,15 @@ class TodayFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.checkButton.setOnClickListener {
+            lifecycleScope.launch {
+                binding.checkButton.visibility = View.GONE
+                todayWeatherViewModel.loadCurrent(requireActivity())
+                delay(3000)
+                binding.checkButton.visibility = View.VISIBLE
+            }
 
+        }
 
         binding.checkForecastBtn.setOnClickListener {
             findNavController().navigate(TodayFragmentDirections.showForecast())

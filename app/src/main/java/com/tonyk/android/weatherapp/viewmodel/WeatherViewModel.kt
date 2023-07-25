@@ -1,6 +1,10 @@
 package com.tonyk.android.weatherapp.viewmodel
 
+import android.content.Intent
+import android.provider.Settings
 import android.util.Log
+import androidx.appcompat.app.AlertDialog
+
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,6 +16,8 @@ import com.tonyk.android.weatherapp.data.WeatherioItem
 import com.tonyk.android.weatherapp.database.LocationRepository
 import com.tonyk.android.weatherapp.repositories.WeatherApiRepository
 import com.tonyk.android.weatherapp.util.LocationService
+
+
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -44,18 +50,14 @@ class WeatherViewModel @Inject constructor(private val weatherApiRepository: Wea
     private val _errorState: MutableSharedFlow<String> = MutableSharedFlow()
     val errorState: SharedFlow<String> = _errorState
 
-    private val _locos: MutableStateFlow<List<LocationItem>> = MutableStateFlow(emptyList())
-    val locos: StateFlow<List<LocationItem>> = _locos
-
-
     private val locationRepository = LocationRepository.get()
 
 
 
-    fun getList() {
+    private fun getList() {
         viewModelScope.launch {
             locationRepository.getLocations().collect { newLocations ->
-                _locos.value = newLocations
+
                 val existingLocations = _locationsList.value.map { it.location }.toSet()
                 newLocations.forEach { newLocationItem ->
                     if (!existingLocations.contains(newLocationItem)) {
@@ -124,27 +126,41 @@ class WeatherViewModel @Inject constructor(private val weatherApiRepository: Wea
     private fun loadLast() {
         viewModelScope.launch {
             _locationsList.filter { it.isNotEmpty() }.first().let { locations ->
-                    _weather.value = locations.first()
+                    setWeather(locations.first())
             }
         }
     }
 
-    private fun loadCurrent(activity: FragmentActivity){
-        LocationService.getLocationData(activity) { it ->
+     fun loadCurrent(activity: FragmentActivity){
+        LocationService.getLocationData(activity) {
             initializeWeatherViewModel(it)
         }
     }
+
     fun startFragment(activity: FragmentActivity) {
+        getList()
         if (LocationService.isLocationPermissionGranted(activity)) {
-            loadCurrent(activity)
+            if (LocationService.isGPSEnabled(activity)) {
+                loadCurrent(activity)
+            } else {
+                loadLast()
+                LocationService.showGPSAlertDialog(activity)
+            }
         } else {
             LocationService.requestLocationPermission(activity) { success ->
                 if (success) {
-                    loadCurrent(activity)
+                    if (LocationService.isGPSEnabled(activity)) {
+                        loadCurrent(activity)
+                    } else {
+                        loadLast()
+                        LocationService.showGPSAlertDialog(activity)
+                    }
                 } else {
-                            loadLast()
+                    loadLast()
                 }
             }
         }
     }
+
+
 }

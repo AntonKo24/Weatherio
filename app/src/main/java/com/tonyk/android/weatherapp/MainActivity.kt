@@ -24,10 +24,15 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
 
-        weatherViewModel.getList()
+
 
         weatherViewModel.startFragment(this)
 
+
+    }
+
+    override fun onResume() {
+        super.onResume()
 
     }
 }

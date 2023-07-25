@@ -2,13 +2,16 @@ package com.tonyk.android.weatherapp.util
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
+import android.provider.Settings
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import com.google.android.gms.location.LocationServices
@@ -26,7 +29,7 @@ import java.util.Locale
 
 object LocationService {
 
-    private fun isGPSEnabled(context: Context): Boolean {
+    fun isGPSEnabled(context: Context): Boolean {
     val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
     return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
 }
@@ -46,17 +49,21 @@ object LocationService {
     }
     @SuppressLint("MissingPermission")
     fun getLocationData(activity: FragmentActivity, onGPSSuccess: (locationItem : LocationItem) -> Unit) {
-        LocationServices.getFusedLocationProviderClient(activity).getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
-            .addOnSuccessListener { it: Location? ->
-                if (it != null) {
-                    val coordinates = "${it.latitude},${it.longitude}"
-                    val address = getLocationName(activity, it.latitude,it.longitude)
-                    onGPSSuccess.invoke(LocationItem(coordinates, address))
+
+            LocationServices.getFusedLocationProviderClient(activity)
+                .getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
+                .addOnSuccessListener { it: Location? ->
+                    if (it != null) {
+                        val coordinates = "${it.latitude},${it.longitude}"
+                        val address = getLocationName(activity, it.latitude, it.longitude)
+                        onGPSSuccess.invoke(LocationItem(coordinates, address))
+                    }
                 }
-            }
-            .addOnFailureListener {
-                showToast(activity, it.toString())
-            }
+                .addOnFailureListener {
+                    showToast(activity, "NO PERMISSION OR GPS NOT ON")
+                }
+
+
     }
     private fun getLocationName(context: Context, latitude: Double, longitude: Double) : String {
         return try {
@@ -73,6 +80,21 @@ object LocationService {
             showToast(context, "Error loading location name")
             ("Unknown location")
         }
+    }
+
+    fun showGPSAlertDialog(activity: FragmentActivity) {
+        AlertDialog.Builder(activity)
+            .setTitle("GPS Required")
+            .setMessage("Please enable GPS and REFRESH page to get your location.")
+            .setPositiveButton("Enable GPS") { _, _ ->
+                val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                activity.startActivity(intent)
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .setCancelable(false)
+            .show()
     }
 }
 

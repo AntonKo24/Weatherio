@@ -304,7 +304,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/manageLocations"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/manageLocations"
-                app:srcCompat="@drawable/ic_settings" />
+                app:srcCompat="@drawable/ic_refresh" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
