@@ -1,15 +1,19 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
-    id 'com.google.dagger.hilt.android'
     id 'org.jetbrains.kotlin.kapt'
+    id 'com.google.dagger.hilt.android'
     id 'androidx.navigation.safeargs'
 
 }
 
+
+
 android {
     namespace 'com.tonyk.android.weatherapp'
     compileSdk 33
+
+
 
     defaultConfig {
         applicationId "com.tonyk.android.weatherapp"
@@ -38,6 +42,8 @@ android {
     kotlinOptions {
         jvmTarget = '17'
     }
+
+
 }
 
 dependencies {
@@ -73,5 +79,14 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
 
     implementation 'io.coil-kt:coil:2.0.0-rc02'
+
+    implementation 'com.google.android.libraries.places:places:3.2.0'
+
+    implementation 'com.google.android.gms:play-services-location:21.0.1'
+
+    implementation 'androidx.room:room-runtime:2.5.2'
+    implementation 'androidx.room:room-ktx:2.5.2'
+    kapt 'androidx.room:room-compiler:2.5.2'
+
 
 }

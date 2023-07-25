@@ -1,4 +1,4 @@
-package com.tonyk.android.weatherapp
+package com.tonyk.android.weatherapp.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -6,42 +6,43 @@ import androidx.lifecycle.viewModelScope
 import com.tonyk.android.weatherapp.api.CurrentWeatherItem
 import com.tonyk.android.weatherapp.api.HourlyWeatherItem
 import com.tonyk.android.weatherapp.api.WeatherResponse
+import com.tonyk.android.weatherapp.data.LocationItem
+import com.tonyk.android.weatherapp.data.WeatherioItem
 import com.tonyk.android.weatherapp.repositories.WeatherApiRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalTime
 import javax.inject.Inject
 
-
-
 @HiltViewModel
-class WeatherViewModel @Inject constructor(private val weatherApiRepository: WeatherApiRepository) : ViewModel() {
+class SearchDetailsViewModel @Inject constructor(private val weatherApiRepository: WeatherApiRepository
 
-    private val _weather: MutableStateFlow<WeatherResponse> = MutableStateFlow(WeatherResponse("", emptyList(), CurrentWeatherItem("", 0.0, 0.0, 0.0, "", 0.0, ""), ""))
-    val weather: StateFlow<WeatherResponse> = _weather.asStateFlow()
+) : ViewModel() {
+
+    private val _weather: MutableStateFlow<WeatherioItem> = MutableStateFlow(
+        WeatherioItem(
+            WeatherResponse("", emptyList(), CurrentWeatherItem("", 0.0, 0.0, 0.0, "", 0.0, ""), ""), LocationItem("", "")
+        )
+    )
+    val weather: StateFlow<WeatherioItem> = _weather
 
     private val _hoursList = mutableListOf<HourlyWeatherItem>()
     val hoursList: List<HourlyWeatherItem> get() = _hoursList
 
-
-    init {
+    fun initializeWeatherViewModel(location : LocationItem) {
         viewModelScope.launch {
             try {
-                val items = weatherApiRepository.fetchWeather("London")
-                _weather.value = items
-                processHourlyForecast(items)
-                Log.d("HM", "$hoursList")
+                val weather = weatherApiRepository.fetchWeather(location.coordinates)
+                _weather.value = WeatherioItem(weather, location)
+                processHourlyForecast(weather)
             }
             catch (ex: Exception) {
-                Log.e("Exception", "$ex", ex)
+                Log.d("Exception", "$ex")
             }
         }
     }
-
-
     private fun processHourlyForecast(weatherData: WeatherResponse) {
         val hoursToAdd = mutableListOf<HourlyWeatherItem>()
         var remainingHours = 24
@@ -60,7 +61,6 @@ class WeatherViewModel @Inject constructor(private val weatherApiRepository: Wea
             dayIndex++
             hourIndex = 0
         }
-
         _hoursList.addAll(hoursToAdd)
     }
 

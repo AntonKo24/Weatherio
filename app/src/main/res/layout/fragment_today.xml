@@ -297,19 +297,17 @@
                 app:srcCompat="@drawable/ic_add" />
 
             <ImageView
-                android:id="@+id/imageView5"
+                android:id="@+id/check_button"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 android:layout_marginEnd="16dp"
                 app:layout_constraintBottom_toBottomOf="@+id/manageLocations"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/manageLocations"
-                app:srcCompat="@drawable/ic_settings" />
+                app:srcCompat="@drawable/ic_refresh" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
-
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
