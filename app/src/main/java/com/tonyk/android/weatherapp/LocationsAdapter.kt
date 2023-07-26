@@ -7,10 +7,15 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.tonyk.android.weatherapp.data.WeatherioItem
 import com.tonyk.android.weatherapp.databinding.LocationItemBinding
+import com.tonyk.android.weatherapp.util.ItemTouchHelperAdapter
 import com.tonyk.android.weatherapp.util.WeatherConverter
+import java.util.Collections
 
-class LocationsAdapter(private val onLocationItemClick: (WeatherioItem) -> Unit, private val onLongItemClick: (WeatherioItem) -> Unit) :
-    ListAdapter<WeatherioItem, LocationsViewHolder>(LocationDiffCallback()) {
+class LocationsAdapter(
+    private val onLocationItemClick: (WeatherioItem) -> Unit,
+    private val onLongItemClick: (WeatherioItem) -> Unit
+) : ListAdapter<WeatherioItem, LocationsViewHolder>(LocationDiffCallback()),
+    ItemTouchHelperAdapter {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LocationsViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -22,7 +27,17 @@ class LocationsAdapter(private val onLocationItemClick: (WeatherioItem) -> Unit,
         val item = getItem(position)
         holder.bind(item)
     }
+
+    override fun onItemMove(fromPosition: Int, toPosition: Int) {
+        val list = currentList.toMutableList()
+        Collections.swap(list, fromPosition, toPosition)
+        submitList(list)
+    }
+    fun getUpdatedList(): List<WeatherioItem> {
+        return currentList.toList()
+    }
 }
+
 
 class LocationsViewHolder(private val binding: LocationItemBinding, private val onLocationItemClick: (WeatherioItem) -> Unit, private val onLongItemClick: (WeatherioItem) -> Unit) :
     RecyclerView.ViewHolder(binding.root) {
@@ -38,9 +53,8 @@ class LocationsViewHolder(private val binding: LocationItemBinding, private val 
             root.setOnClickListener {
                 onLocationItemClick(locationListItem)
             }
-            root.setOnLongClickListener {
+            tempText.setOnClickListener {
                 onLongItemClick(locationListItem)
-                true // or false, depending on whether you want to consume the event or not
             }
         }
     }

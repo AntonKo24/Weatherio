@@ -19,7 +19,12 @@ class LocationRepository private constructor(context: Context) {
         )
         .build()
 
-
+    suspend fun deleteAllLocations() {
+        database.locationDao().deleteAllLocations()
+    }
+    suspend fun updateLocations(locations: List<LocationItem>) {
+        database.locationDao().updateLocations(locations)
+    }
     fun getLocations(): Flow<List<LocationItem>> = database.locationDao().getLocations()
 
     suspend fun addLocation(location: LocationItem) {

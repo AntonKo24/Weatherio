@@ -1,6 +1,7 @@
 package com.tonyk.android.weatherapp.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.common.api.Status
 import com.google.android.libraries.places.api.model.Place
@@ -20,21 +22,22 @@ import com.google.android.libraries.places.widget.listener.PlaceSelectionListene
 import com.tonyk.android.weatherapp.LocationsAdapter
 import com.tonyk.android.weatherapp.R
 import com.tonyk.android.weatherapp.data.LocationItem
-import com.tonyk.android.weatherapp.data.WeatherioItem
 import com.tonyk.android.weatherapp.databinding.FragmentLocationsBinding
+import com.tonyk.android.weatherapp.util.DragItemTouchHelperCallback
 import com.tonyk.android.weatherapp.viewmodel.WeatherViewModel
 
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class LocationsFragment: Fragment() {
+class ManageLocationsFragment: Fragment() {
     private var _binding: FragmentLocationsBinding? = null
     private val binding
         get () = checkNotNull(_binding)
 
     private val weatherViewModel : WeatherViewModel by activityViewModels()
+
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -58,15 +61,19 @@ class LocationsFragment: Fragment() {
             weatherViewModel.setWeather(item)
             findNavController().popBackStack()
         }, { item ->
-            weatherViewModel.deleteLocation(item.location)
+                weatherViewModel.deleteLocation(item.location)
         })
 
         binding.rcvLocations.adapter = adapter
+
+        val itemTouchHelper = ItemTouchHelper(DragItemTouchHelperCallback(adapter))
+        itemTouchHelper.attachToRecyclerView(binding.rcvLocations)
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 weatherViewModel.locationsList.collect {
                     adapter.submitList(it)
+
                 }
             }
         }
@@ -81,7 +88,7 @@ class LocationsFragment: Fragment() {
                 val address = place.name ?: ""
 
                 if (weatherViewModel.locationsList.value.none { it.location == LocationItem(coordinates, address) }) {
-                    findNavController().navigate(LocationsFragmentDirections.searchResult(coordinates, address))
+                    findNavController().navigate(ManageLocationsFragmentDirections.searchResult(coordinates, address))
                 } else {
                     Toast.makeText(requireContext(), "Location is already in the list", Toast.LENGTH_LONG).show()
                 }
@@ -91,8 +98,25 @@ class LocationsFragment: Fragment() {
             }
         })
     }
+
+    override fun onStop() {
+        super.onStop()
+        lifecycleScope.launch() {
+            weatherViewModel.deleteAllLocations()
+        val updatedList = (binding.rcvLocations.adapter as? LocationsAdapter)?.getUpdatedList()
+        val locoList = updatedList?.map { it.location }
+        if (updatedList != null) {
+            if (locoList != null) {
+                weatherViewModel.locoUpdate(updatedList)
+                weatherViewModel.updateLocations(locoList)
+            }
+            Log.d("Testo", "$locoList")
+        }
+        }
+    }
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
+
 }

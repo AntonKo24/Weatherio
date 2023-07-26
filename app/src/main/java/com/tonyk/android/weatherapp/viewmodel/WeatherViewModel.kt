@@ -1,9 +1,6 @@
 package com.tonyk.android.weatherapp.viewmodel
 
-import android.content.Intent
-import android.provider.Settings
 import android.util.Log
-import androidx.appcompat.app.AlertDialog
 
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
@@ -23,11 +20,8 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import java.time.LocalTime
 import javax.inject.Inject
@@ -54,7 +48,7 @@ class WeatherViewModel @Inject constructor(private val weatherApiRepository: Wea
 
 
 
-    private fun getList() {
+     fun getList() {
         viewModelScope.launch {
             locationRepository.getLocations().collect { newLocations ->
 
@@ -67,6 +61,27 @@ class WeatherViewModel @Inject constructor(private val weatherApiRepository: Wea
                 }
             }
         }
+    }
+
+    fun deleteAllLocations() {
+        viewModelScope.launch {
+            locationRepository.deleteAllLocations()
+        }
+    }
+
+    fun updateLocations(dataList: List<LocationItem>) {
+        viewModelScope.launch {
+            try {
+                locationRepository.updateLocations(dataList)
+
+
+            } catch (e: Exception) {
+                Log.d("Testo", "Error updating locations: $dataList")
+            }
+        }
+    }
+    fun locoUpdate (dataList: List<WeatherioItem>) {
+        _locationsList.value = dataList
     }
 
     fun setWeather(weather : WeatherioItem) {
