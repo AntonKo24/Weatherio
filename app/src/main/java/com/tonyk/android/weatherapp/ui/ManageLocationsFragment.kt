@@ -61,7 +61,9 @@ class ManageLocationsFragment: Fragment() {
             weatherViewModel.setWeather(item)
             findNavController().popBackStack()
         }, { item ->
-                weatherViewModel.deleteLocation(item.location)
+            weatherViewModel.deleteLocation(item.location)
+        }, { reorderedList ->
+            weatherViewModel.updateLocations(reorderedList)
         })
 
         binding.rcvLocations.adapter = adapter
@@ -87,7 +89,7 @@ class ManageLocationsFragment: Fragment() {
                 val coordinates = "${place.latLng?.latitude ?: 0.0},${place.latLng?.longitude ?: 0.0}"
                 val address = place.name ?: ""
 
-                if (weatherViewModel.locationsList.value.none { it.location == LocationItem(coordinates, address) }) {
+                if (weatherViewModel.locationsList.value.none { it.location == LocationItem(coordinates, address, 0) }) {
                     findNavController().navigate(ManageLocationsFragmentDirections.searchResult(coordinates, address))
                 } else {
                     Toast.makeText(requireContext(), "Location is already in the list", Toast.LENGTH_LONG).show()
@@ -99,21 +101,7 @@ class ManageLocationsFragment: Fragment() {
         })
     }
 
-    override fun onStop() {
-        super.onStop()
-        lifecycleScope.launch() {
-            weatherViewModel.deleteAllLocations()
-        val updatedList = (binding.rcvLocations.adapter as? LocationsAdapter)?.getUpdatedList()
-        val locoList = updatedList?.map { it.location }
-        if (updatedList != null) {
-            if (locoList != null) {
-                weatherViewModel.locoUpdate(updatedList)
-                weatherViewModel.updateLocations(locoList)
-            }
-            Log.d("Testo", "$locoList")
-        }
-        }
-    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

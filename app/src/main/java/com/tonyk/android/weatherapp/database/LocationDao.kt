@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface LocationDao {
 
-    @Query("SELECT * FROM locationitem")
+    @Query("SELECT * FROM locationitem ORDER by position")
     fun getLocations(): Flow<List<LocationItem>>
 
     @Insert
@@ -21,11 +21,10 @@ interface LocationDao {
     @Delete
     suspend fun deleteLocation(location: LocationItem)
 
-    @Insert
-    suspend fun updateLocations(locations: List<LocationItem>)
+    @Update
+    suspend fun updateLocation(location: LocationItem)
 
     @Query("DELETE FROM locationitem")
     suspend fun deleteAllLocations()
-
 
 }

@@ -32,7 +32,7 @@ class WeatherViewModel @Inject constructor(private val weatherApiRepository: Wea
 
 ) : ViewModel() {
 
-    private val _weather: MutableStateFlow<WeatherioItem> = MutableStateFlow(WeatherioItem(WeatherResponse("", emptyList(), CurrentWeatherItem("", 0.0, 0.0, 0.0, "", 0.0, ""), ""), LocationItem("", "")))
+    private val _weather: MutableStateFlow<WeatherioItem> = MutableStateFlow(WeatherioItem(WeatherResponse("", emptyList(), CurrentWeatherItem("", 0.0, 0.0, 0.0, "", 0.0, ""), ""), LocationItem("", "", 0)))
     val weather: StateFlow<WeatherioItem> = _weather
 
     private val _hoursList = mutableListOf<HourlyWeatherItem>()
@@ -46,15 +46,15 @@ class WeatherViewModel @Inject constructor(private val weatherApiRepository: Wea
 
     private val locationRepository = LocationRepository.get()
 
-
+    var size = 0
 
      fun getList() {
         viewModelScope.launch {
             locationRepository.getLocations().collect { newLocations ->
-
-                val existingLocations = _locationsList.value.map { it.location }.toSet()
+                size = newLocations.size
+                val existingLocations = _locationsList.value.map { it.location.coordinates }.toSet()
                 newLocations.forEach { newLocationItem ->
-                    if (!existingLocations.contains(newLocationItem)) {
+                    if (!existingLocations.contains(newLocationItem.coordinates)) {
                         val weather = weatherApiRepository.fetchWeather(newLocationItem.coordinates)
                         _locationsList.value = _locationsList.value + WeatherioItem(weather, newLocationItem)
                     }
@@ -63,25 +63,20 @@ class WeatherViewModel @Inject constructor(private val weatherApiRepository: Wea
         }
     }
 
-    fun deleteAllLocations() {
+
+    fun updateLocations(dataList: List<WeatherioItem>) {
         viewModelScope.launch {
-            locationRepository.deleteAllLocations()
-        }
-    }
-
-    fun updateLocations(dataList: List<LocationItem>) {
-        viewModelScope.launch {
-            try {
-                locationRepository.updateLocations(dataList)
-
-
-            } catch (e: Exception) {
-                Log.d("Testo", "Error updating locations: $dataList")
+            _locationsList.value = dataList
+            val locationList = dataList?.map { it.location }
+            locationList?.let { list ->
+                val new = list.mapIndexed { index, locationItem ->
+                    locationItem.copy(position = index)
+                }
+                new.forEach { locationItem ->
+                        locationRepository.updateLocation(locationItem)
+                }
             }
         }
-    }
-    fun locoUpdate (dataList: List<WeatherioItem>) {
-        _locationsList.value = dataList
     }
 
     fun setWeather(weather : WeatherioItem) {
@@ -136,6 +131,7 @@ class WeatherViewModel @Inject constructor(private val weatherApiRepository: Wea
         }
         _hoursList.addAll(hoursToAdd)
     }
+
 
 
     private fun loadLast() {

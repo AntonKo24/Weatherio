@@ -13,7 +13,8 @@ import java.util.Collections
 
 class LocationsAdapter(
     private val onLocationItemClick: (WeatherioItem) -> Unit,
-    private val onLongItemClick: (WeatherioItem) -> Unit
+    private val onLongItemClick: (WeatherioItem) -> Unit,
+    private val onListReordered: (List<WeatherioItem>) -> Unit
 ) : ListAdapter<WeatherioItem, LocationsViewHolder>(LocationDiffCallback()),
     ItemTouchHelperAdapter {
 
@@ -32,9 +33,7 @@ class LocationsAdapter(
         val list = currentList.toMutableList()
         Collections.swap(list, fromPosition, toPosition)
         submitList(list)
-    }
-    fun getUpdatedList(): List<WeatherioItem> {
-        return currentList.toList()
+        onListReordered(list)
     }
 }
 

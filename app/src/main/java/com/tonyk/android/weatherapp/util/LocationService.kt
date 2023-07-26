@@ -56,7 +56,7 @@ object LocationService {
                     if (it != null) {
                         val coordinates = "${it.latitude},${it.longitude}"
                         val address = getLocationName(activity, it.latitude, it.longitude)
-                        onGPSSuccess.invoke(LocationItem(coordinates, address))
+                        onGPSSuccess.invoke(LocationItem(coordinates, address, 0))
                     }
                 }
                 .addOnFailureListener {

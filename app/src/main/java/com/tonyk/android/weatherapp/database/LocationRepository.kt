@@ -22,8 +22,8 @@ class LocationRepository private constructor(context: Context) {
     suspend fun deleteAllLocations() {
         database.locationDao().deleteAllLocations()
     }
-    suspend fun updateLocations(locations: List<LocationItem>) {
-        database.locationDao().updateLocations(locations)
+    suspend fun updateLocation(location: LocationItem) {
+        database.locationDao().updateLocation(location)
     }
     fun getLocations(): Flow<List<LocationItem>> = database.locationDao().getLocations()
 

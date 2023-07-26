@@ -63,7 +63,10 @@ class TodayWeatherFragment : BaseWeatherFragment() {
 
         drawerLayout.setScrimColor(getResources().getColor(android.R.color.transparent))
 
-
+        binding.settingsBtn.setOnClickListener {
+            drawerLayout.closeDrawer(GravityCompat.START)
+            findNavController().navigate(TodayWeatherFragmentDirections.manageLocations())
+        }
 
         binding.manageLocations.setOnClickListener {
             drawerLayout.openDrawer(GravityCompat.START)

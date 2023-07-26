@@ -23,7 +23,7 @@ class SearchDetailsViewModel @Inject constructor(private val weatherApiRepositor
 
     private val _weather: MutableStateFlow<WeatherioItem> = MutableStateFlow(
         WeatherioItem(
-            WeatherResponse("", emptyList(), CurrentWeatherItem("", 0.0, 0.0, 0.0, "", 0.0, ""), ""), LocationItem("", "")
+            WeatherResponse("", emptyList(), CurrentWeatherItem("", 0.0, 0.0, 0.0, "", 0.0, ""), ""), LocationItem("", "", 0)
         )
     )
     val weather: StateFlow<WeatherioItem> = _weather

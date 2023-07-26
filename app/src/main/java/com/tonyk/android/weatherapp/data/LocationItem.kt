@@ -7,5 +7,6 @@ import androidx.room.PrimaryKey
 @Entity
 data class LocationItem (
     @PrimaryKey val coordinates : String,
-    val address : String
+    val address : String,
+    val position: Int
 )

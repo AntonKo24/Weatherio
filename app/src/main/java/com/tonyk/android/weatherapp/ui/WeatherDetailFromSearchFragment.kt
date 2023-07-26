@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -30,7 +31,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class WeatherDetailFromSearchFragment: BaseWeatherFragment() {
 
-    private val searchWeatherViewModel : WeatherViewModel by viewModels()
+    private val searchWeatherViewModel : WeatherViewModel by activityViewModels()
     private val args: WeatherDetailFromSearchFragmentArgs by navArgs()
 
     override fun inflateBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentTodayBinding {
@@ -43,7 +44,7 @@ class WeatherDetailFromSearchFragment: BaseWeatherFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        searchWeatherViewModel.initializeWeatherViewModel(LocationItem(args.location, args.address))
+        searchWeatherViewModel.initializeWeatherViewModel(LocationItem(args.location, args.address, 0))
 
         binding.checkButton.load(R.drawable.ic_check)
         binding.manageLocations.load(R.drawable.back)
@@ -55,7 +56,7 @@ class WeatherDetailFromSearchFragment: BaseWeatherFragment() {
             findNavController().popBackStack()
         }
         binding.checkButton.setOnClickListener {
-            searchWeatherViewModel.addLocation(LocationItem(args.location, args.address))
+            searchWeatherViewModel.addLocation(LocationItem(args.location, args.address, (searchWeatherViewModel.size+1)))
             findNavController().popBackStack()
         }
     }
