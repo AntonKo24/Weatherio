@@ -14,6 +14,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.navigation.NavigationView
 import com.tonyk.android.weatherapp.R
 
 import com.tonyk.android.weatherapp.databinding.FragmentTodayBinding
@@ -28,8 +29,7 @@ class TodayWeatherFragment : BaseWeatherFragment() {
 
     private val todayWeatherViewModel: WeatherViewModel by activityViewModels()
 
-    private lateinit var drawerLayout: DrawerLayout
-    private lateinit var navDrawer: ConstraintLayout
+
 
     override fun inflateBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentTodayBinding {
         return FragmentTodayBinding.inflate(inflater, container, false)
@@ -54,9 +54,12 @@ class TodayWeatherFragment : BaseWeatherFragment() {
             findNavController().navigate(TodayWeatherFragmentDirections.manageLocations())
         }
 
-        drawerLayout = binding.drawerLayout
-        navDrawer = binding.navDrawer
 
+
+
+
+
+        val drawerLayout = binding.drawerLayout
         val toggle = ActionBarDrawerToggle(requireActivity(), drawerLayout, 0, 0)
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()

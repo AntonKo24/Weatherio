@@ -22,13 +22,11 @@ import kotlinx.coroutines.launch
 
 abstract class BaseWeatherFragment : Fragment() {
 
-
     private var _binding: FragmentTodayBinding? = null
     protected val binding: FragmentTodayBinding
         get() = checkNotNull(_binding)
     abstract fun inflateBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentTodayBinding
     abstract fun getWeatherViewModel(): WeatherViewModel
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -37,7 +35,6 @@ abstract class BaseWeatherFragment : Fragment() {
         _binding = inflateBinding(inflater, container)
         return binding.root
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeWeatherData(getWeatherViewModel())

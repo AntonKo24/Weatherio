@@ -48,7 +48,6 @@ class LocationsViewHolder(private val binding: LocationItemBinding, private val 
             highLowText.text = root.context.getString(R.string.High_Low_temp,
                 WeatherConverter.formatData(locationListItem.weather.days[0].tempmax),
                 WeatherConverter.formatData(locationListItem.weather.days[0].tempmin))
-
             root.setOnClickListener {
                 onLocationItemClick(locationListItem)
             }

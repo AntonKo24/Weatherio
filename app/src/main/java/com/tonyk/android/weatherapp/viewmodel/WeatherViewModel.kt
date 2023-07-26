@@ -48,7 +48,7 @@ class WeatherViewModel @Inject constructor(private val weatherApiRepository: Wea
 
     var size = 0
 
-     fun getList() {
+     private fun getList() {
         viewModelScope.launch {
             locationRepository.getLocations().collect { newLocations ->
                 size = newLocations.size
