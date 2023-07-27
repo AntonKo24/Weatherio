@@ -48,7 +48,7 @@ object LocationService {
         requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
     }
     @SuppressLint("MissingPermission")
-    fun getLocationData(activity: FragmentActivity, onGPSSuccess: (locationItem : LocationItem) -> Unit) {
+    fun getLocationData(activity: FragmentActivity, onGPSSuccess: (coordinates: String, address: String) -> Unit) {
 
             LocationServices.getFusedLocationProviderClient(activity)
                 .getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
@@ -56,7 +56,7 @@ object LocationService {
                     if (it != null) {
                         val coordinates = "${it.latitude},${it.longitude}"
                         val address = getLocationName(activity, it.latitude, it.longitude)
-                        onGPSSuccess.invoke(LocationItem(coordinates, address, 0))
+                        onGPSSuccess.invoke(coordinates, address)
                     }
                 }
                 .addOnFailureListener {

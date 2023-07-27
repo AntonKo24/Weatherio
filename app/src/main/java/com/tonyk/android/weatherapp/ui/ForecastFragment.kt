@@ -8,15 +8,19 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
 import com.tonyk.android.weatherapp.ForecastWeatherAdapter
 import com.tonyk.android.weatherapp.R
 import com.tonyk.android.weatherapp.databinding.FragmentForecastBinding
+import com.tonyk.android.weatherapp.databinding.FragmentLocationsBinding
+import com.tonyk.android.weatherapp.databinding.FragmentTodayBinding
 import com.tonyk.android.weatherapp.util.WeatherConverter
 import com.tonyk.android.weatherapp.util.WeatherIconMapper
 import com.tonyk.android.weatherapp.viewmodel.WeatherViewModel
@@ -25,11 +29,13 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class ForecastFragment: Fragment() {
+
     private var _binding: FragmentForecastBinding? = null
     private val binding
         get () = checkNotNull(_binding)
 
-    private val weatherViewModel : WeatherViewModel by activityViewModels()
+    private val forecastWeatherViewModel : WeatherViewModel by viewModels()
+    private val args: ForecastFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,18 +45,18 @@ class ForecastFragment: Fragment() {
         _binding =
             FragmentForecastBinding.inflate(inflater, container, false)
 
-        return binding.root }
+        return binding.root
+    }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-
+        forecastWeatherViewModel.setWeather(args.weather)
         binding.rcvForecast.layoutManager = LinearLayoutManager(context)
-
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                weatherViewModel.weather.collect { it ->
+                forecastWeatherViewModel.weather.collect { it ->
                     binding.apply {
                         locationText.text = it.location.address
                         if (it.weather.days.isNotEmpty()) {
@@ -67,21 +73,15 @@ class ForecastFragment: Fragment() {
                             rcvForecast.adapter = ForecastWeatherAdapter(it.weather.days)
                         }
                     }
-
                 }
             }
         }
         binding.backBtn.setOnClickListener {
             findNavController().popBackStack()
         }
-
     }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-
-
-
 }

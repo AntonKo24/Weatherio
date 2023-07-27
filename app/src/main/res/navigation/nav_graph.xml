@@ -7,9 +7,9 @@
 
     <fragment
         android:id="@+id/todayFragment"
-        android:name="com.tonyk.android.weatherapp.ui.TodayWeatherFragment"
+        android:name="com.tonyk.android.weatherapp.ui.MainPageWeatherFragment"
         android:label="TodayFragment"
-        tools:layout="@layout/fragment_today" >
+        tools:layout="@layout/fragment_weather" >
         <action
             android:id="@+id/show_forecast"
             app:destination="@id/forecastFragment"
@@ -29,12 +29,15 @@
         android:label="ForecastFragment"
         tools:layout="@layout/fragment_forecast">
 
+        <argument
+            android:name="weather"
+            app:argType="com.tonyk.android.weatherapp.data.WeatherioItem" />
     </fragment>
     <fragment
         android:id="@+id/hilt_ManageLocationsFragment"
         android:name="com.tonyk.android.weatherapp.ui.ManageLocationsFragment"
         android:label="Hilt_ManageLocationsFragment"
-        tools:layout="@layout/fragment_locations"
+        tools:layout="@layout/fragment_manage_locations"
         >
         <action
             android:id="@+id/search_result"
@@ -42,11 +45,14 @@
     </fragment>
     <fragment
         android:id="@+id/searchDetailsFragment"
-        android:name="com.tonyk.android.weatherapp.ui.WeatherDetailFromSearchFragment"
+        android:name="com.tonyk.android.weatherapp.ui.SearchPageWeatherFragment"
         android:label="SearchDetailsFragment" >
         <argument
             android:name="location"
             app:argType="string" />
         <argument android:name="address" />
+        <action
+            android:id="@+id/search_forecast"
+            app:destination="@id/forecastFragment" />
     </fragment>
 </navigation>

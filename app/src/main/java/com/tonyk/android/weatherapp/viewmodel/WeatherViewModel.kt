@@ -10,7 +10,8 @@ import com.tonyk.android.weatherapp.api.HourlyWeatherItem
 import com.tonyk.android.weatherapp.api.WeatherResponse
 import com.tonyk.android.weatherapp.data.LocationItem
 import com.tonyk.android.weatherapp.data.WeatherioItem
-import com.tonyk.android.weatherapp.database.LocationRepository
+import com.tonyk.android.weatherapp.database.LocationsDatabaseRepository
+import com.tonyk.android.weatherapp.database.LocationsDatabaseRepositoryImpl
 import com.tonyk.android.weatherapp.repositories.WeatherApiRepository
 import com.tonyk.android.weatherapp.util.LocationService
 
@@ -28,7 +29,8 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class WeatherViewModel @Inject constructor(private val weatherApiRepository: WeatherApiRepository
+class WeatherViewModel @Inject constructor(private val weatherApiRepository: WeatherApiRepository,
+                                           private val locationsDB : LocationsDatabaseRepository
 
 ) : ViewModel() {
 
@@ -44,14 +46,13 @@ class WeatherViewModel @Inject constructor(private val weatherApiRepository: Wea
     private val _errorState: MutableSharedFlow<String> = MutableSharedFlow()
     val errorState: SharedFlow<String> = _errorState
 
-    private val locationRepository = LocationRepository.get()
 
-    var size = 0
+
+
 
      private fun getList() {
         viewModelScope.launch {
-            locationRepository.getLocations().collect { newLocations ->
-                size = newLocations.size
+            locationsDB.getLocations().collect { newLocations ->
                 val existingLocations = _locationsList.value.map { it.location.coordinates }.toSet()
                 newLocations.forEach { newLocationItem ->
                     if (!existingLocations.contains(newLocationItem.coordinates)) {
@@ -73,7 +74,7 @@ class WeatherViewModel @Inject constructor(private val weatherApiRepository: Wea
                     locationItem.copy(position = index)
                 }
                 new.forEach { locationItem ->
-                        locationRepository.updateLocation(locationItem)
+                        locationsDB.updateLocation(locationItem)
                 }
             }
         }
@@ -85,24 +86,24 @@ class WeatherViewModel @Inject constructor(private val weatherApiRepository: Wea
     }
 
 
-    fun addLocation(location: LocationItem) {
+    fun addLocation(coordinates : String, address: String) {
         viewModelScope.launch {
-            locationRepository.addLocation(location)
+            locationsDB.addLocation(LocationItem(coordinates, address, locationsList.value.size))
         }
     }
 
     fun deleteLocation(location: LocationItem) {
         viewModelScope.launch {
-            locationRepository.deleteLocation(location)
+            locationsDB.deleteLocation(location)
             _locationsList.value = _locationsList.value.filter { it.location != location }
         }
     }
 
-    fun initializeWeatherViewModel(location : LocationItem) {
+    fun initializeWeatherViewModel(coordinates: String, address: String) {
         viewModelScope.launch {
             try {
-                val weather = weatherApiRepository.fetchWeather(location.coordinates)
-                setWeather(WeatherioItem(weather, location))
+                val weather = weatherApiRepository.fetchWeather(coordinates)
+                setWeather(WeatherioItem(weather, LocationItem(coordinates, address, -1)))
             }
             catch (ex: Exception) {
                 Log.d("Exception", "$ex")
@@ -133,7 +134,6 @@ class WeatherViewModel @Inject constructor(private val weatherApiRepository: Wea
     }
 
 
-
     private fun loadLast() {
         viewModelScope.launch {
             _locationsList.filter { it.isNotEmpty() }.first().let { locations ->
@@ -144,8 +144,8 @@ class WeatherViewModel @Inject constructor(private val weatherApiRepository: Wea
 
      fun loadCurrent(activity: FragmentActivity){
         if (LocationService.isGPSEnabled(activity)) {
-            LocationService.getLocationData(activity) {
-                initializeWeatherViewModel(it)
+            LocationService.getLocationData(activity) { coordinates, address ->
+                initializeWeatherViewModel(coordinates, address)
             }
         }
         else {
@@ -168,6 +168,4 @@ class WeatherViewModel @Inject constructor(private val weatherApiRepository: Wea
             }
         }
     }
-
-
 }

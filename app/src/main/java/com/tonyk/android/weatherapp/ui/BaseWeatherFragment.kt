@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
 import com.tonyk.android.weatherapp.R
 import com.tonyk.android.weatherapp.TodayWeatherAdapter
-import com.tonyk.android.weatherapp.databinding.FragmentTodayBinding
+import com.tonyk.android.weatherapp.databinding.FragmentWeatherBinding
 import com.tonyk.android.weatherapp.util.DateConverter
 import com.tonyk.android.weatherapp.util.WeatherConverter
 import com.tonyk.android.weatherapp.util.WeatherIconMapper
@@ -22,10 +22,10 @@ import kotlinx.coroutines.launch
 
 abstract class BaseWeatherFragment : Fragment() {
 
-    private var _binding: FragmentTodayBinding? = null
-    protected val binding: FragmentTodayBinding
+    private var _binding: FragmentWeatherBinding? = null
+    protected val binding: FragmentWeatherBinding
         get() = checkNotNull(_binding)
-    abstract fun inflateBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentTodayBinding
+    abstract fun inflateBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentWeatherBinding
     abstract fun getWeatherViewModel(): WeatherViewModel
     override fun onCreateView(
         inflater: LayoutInflater,

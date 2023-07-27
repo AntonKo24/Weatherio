@@ -24,7 +24,6 @@ class ForecastListHolder(private val binding: DaysForecastItemBinding) : Recycle
     }
 }
 
-
 class ForecastWeatherAdapter (private val weatherList : List<DailyWeatherItem>) : RecyclerView.Adapter<ForecastListHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ForecastListHolder {
         val inflater = LayoutInflater.from(parent.context)

@@ -1,7 +1,6 @@
 package com.tonyk.android.weatherapp.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,7 +21,7 @@ import com.google.android.libraries.places.widget.listener.PlaceSelectionListene
 import com.tonyk.android.weatherapp.LocationsAdapter
 import com.tonyk.android.weatherapp.R
 import com.tonyk.android.weatherapp.data.LocationItem
-import com.tonyk.android.weatherapp.databinding.FragmentLocationsBinding
+import com.tonyk.android.weatherapp.databinding.FragmentManageLocationsBinding
 import com.tonyk.android.weatherapp.util.DragItemTouchHelperCallback
 import com.tonyk.android.weatherapp.viewmodel.WeatherViewModel
 
@@ -31,7 +30,7 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class ManageLocationsFragment: Fragment() {
-    private var _binding: FragmentLocationsBinding? = null
+    private var _binding: FragmentManageLocationsBinding? = null
     private val binding
         get () = checkNotNull(_binding)
 
@@ -44,7 +43,7 @@ class ManageLocationsFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding =
-            FragmentLocationsBinding.inflate(inflater, container, false)
+            FragmentManageLocationsBinding.inflate(inflater, container, false)
 
         return binding.root
     }
