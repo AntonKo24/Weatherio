@@ -48,11 +48,16 @@
         android:name="com.tonyk.android.weatherapp.ui.SearchPageWeatherFragment"
         android:label="SearchDetailsFragment" >
         <argument
-            android:name="location"
+            android:name="coordinates"
             app:argType="string" />
-        <argument android:name="address" />
+        <argument
+            android:name="address"
+            app:argType="string" />
         <action
             android:id="@+id/search_forecast"
             app:destination="@id/forecastFragment" />
+        <argument
+            android:name="listSize"
+            app:argType="integer" />
     </fragment>
 </navigation>

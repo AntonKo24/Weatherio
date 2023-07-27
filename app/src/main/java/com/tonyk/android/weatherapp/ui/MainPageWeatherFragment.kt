@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
@@ -12,11 +13,11 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.tonyk.android.weatherapp.databinding.FragmentWeatherBinding
+import com.tonyk.android.weatherapp.util.LocationService
 import com.tonyk.android.weatherapp.viewmodel.WeatherViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-
 
 @AndroidEntryPoint
 class MainPageWeatherFragment : BaseWeatherFragment() {
@@ -32,16 +33,27 @@ class MainPageWeatherFragment : BaseWeatherFragment() {
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
         binding.checkButton.setOnClickListener {
             lifecycleScope.launch {
                 binding.checkButton.visibility = View.GONE
-                todayWeatherViewModel.loadCurrent(requireActivity())
+                if (LocationService.isLocationPermissionGranted(requireActivity())) {
+                    if (LocationService.isGPSEnabled(requireActivity())) {
+                        LocationService.getLocationData(requireActivity()) { coordinates, address ->
+                            todayWeatherViewModel.initializeWeatherViewModel(coordinates, address)
+                        }
+                    } else { LocationService.showGPSAlertDialog(requireActivity()) }
+                }
+                else Toast.makeText(context, "Permission is not granted", Toast.LENGTH_LONG).show()
                 delay(3000)
                 binding.checkButton.visibility = View.VISIBLE
             }
         }
+
         binding.checkForecastBtn.setOnClickListener {
-            findNavController().navigate(TodayWeatherFragmentDirections.showForecast(todayWeatherViewModel.weather.value))
+            if (todayWeatherViewModel.weatherioItem.value.weather.days.isNotEmpty()) {
+            findNavController().navigate(MainPageWeatherFragmentDirections.showForecast(todayWeatherViewModel.weatherioItem.value)) }
         }
 
 
@@ -52,7 +64,7 @@ class MainPageWeatherFragment : BaseWeatherFragment() {
         drawerLayout.setScrimColor(ContextCompat.getColor(requireContext(), android.R.color.transparent))
         binding.settingsBtn.setOnClickListener {
             drawerLayout.closeDrawer(GravityCompat.START)
-            findNavController().navigate(TodayWeatherFragmentDirections.manageLocations())
+            findNavController().navigate(MainPageWeatherFragmentDirections.manageLocations())
         }
         binding.manageLocations.setOnClickListener {
             drawerLayout.openDrawer(GravityCompat.START)

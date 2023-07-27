@@ -20,11 +20,9 @@ import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import com.tonyk.android.weatherapp.LocationsAdapter
 import com.tonyk.android.weatherapp.R
-import com.tonyk.android.weatherapp.data.LocationItem
 import com.tonyk.android.weatherapp.databinding.FragmentManageLocationsBinding
 import com.tonyk.android.weatherapp.util.DragItemTouchHelperCallback
 import com.tonyk.android.weatherapp.viewmodel.WeatherViewModel
-
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -61,8 +59,10 @@ class ManageLocationsFragment: Fragment() {
             findNavController().popBackStack()
         }, { item ->
             weatherViewModel.deleteLocation(item.location)
+            weatherViewModel.updateLocationsPosition(weatherViewModel.locationsList.value)
         }, { reorderedList ->
-            weatherViewModel.updateLocations(reorderedList)
+            weatherViewModel.updateViewModelList(reorderedList)
+            weatherViewModel.updateLocationsPosition(reorderedList)
         })
 
         binding.rcvLocations.adapter = adapter
@@ -81,15 +81,14 @@ class ManageLocationsFragment: Fragment() {
 
         val autocompleteFragment =
             childFragmentManager.findFragmentById(R.id.autocompleteFragment) as AutocompleteSupportFragment
-        autocompleteFragment.setPlaceFields(listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG))
+        autocompleteFragment.setPlaceFields(listOf(Place.Field.NAME, Place.Field.LAT_LNG))
         autocompleteFragment.setTypesFilter(listOf(PlaceTypes.CITIES))
         autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(place: Place) {
                 val coordinates = "${place.latLng?.latitude ?: 0.0},${place.latLng?.longitude ?: 0.0}"
                 val address = place.name ?: ""
-
-                if (weatherViewModel.locationsList.value.none { it.location == LocationItem(coordinates, address, 0) }) {
-                    findNavController().navigate(ManageLocationsFragmentDirections.searchResult(coordinates, address))
+                if (weatherViewModel.locationsList.value.none { it.location.coordinates == coordinates }) {
+                    findNavController().navigate(ManageLocationsFragmentDirections.searchResult(coordinates, address, weatherViewModel.locationsList.value.size))
                 } else {
                     Toast.makeText(requireContext(), "Location is already in the list", Toast.LENGTH_LONG).show()
                 }
@@ -99,7 +98,6 @@ class ManageLocationsFragment: Fragment() {
             }
         })
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()

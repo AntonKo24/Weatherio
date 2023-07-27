@@ -8,7 +8,6 @@ import androidx.room.Update
 import com.tonyk.android.weatherapp.data.LocationItem
 import kotlinx.coroutines.flow.Flow
 
-
 @Dao
 interface LocationsDao {
 

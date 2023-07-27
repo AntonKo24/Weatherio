@@ -37,7 +37,6 @@ class LocationsAdapter(
     }
 }
 
-
 class LocationsViewHolder(private val binding: LocationItemBinding, private val onLocationItemClick: (WeatherioItem) -> Unit, private val onLongItemClick: (WeatherioItem) -> Unit) :
     RecyclerView.ViewHolder(binding.root) {
 

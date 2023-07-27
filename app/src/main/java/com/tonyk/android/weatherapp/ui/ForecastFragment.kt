@@ -1,13 +1,10 @@
 package com.tonyk.android.weatherapp.ui
 
-import android.animation.ArgbEvaluator
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -19,8 +16,6 @@ import coil.load
 import com.tonyk.android.weatherapp.ForecastWeatherAdapter
 import com.tonyk.android.weatherapp.R
 import com.tonyk.android.weatherapp.databinding.FragmentForecastBinding
-import com.tonyk.android.weatherapp.databinding.FragmentLocationsBinding
-import com.tonyk.android.weatherapp.databinding.FragmentTodayBinding
 import com.tonyk.android.weatherapp.util.WeatherConverter
 import com.tonyk.android.weatherapp.util.WeatherIconMapper
 import com.tonyk.android.weatherapp.viewmodel.WeatherViewModel
@@ -56,7 +51,7 @@ class ForecastFragment: Fragment() {
         binding.rcvForecast.layoutManager = LinearLayoutManager(context)
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                forecastWeatherViewModel.weather.collect { it ->
+                forecastWeatherViewModel.weatherioItem.collect { it ->
                     binding.apply {
                         locationText.text = it.location.address
                         if (it.weather.days.isNotEmpty()) {

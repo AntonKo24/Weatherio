@@ -1,6 +1,5 @@
 package com.tonyk.android.weatherapp.repositories
 
-import android.util.Log
 import com.tonyk.android.weatherapp.api.WeatherApi
 import com.tonyk.android.weatherapp.api.WeatherResponse
 import javax.inject.Inject
@@ -11,9 +10,7 @@ class WeatherApiRepositoryImpl @Inject constructor(private val weatherApi: Weath
     WeatherApiRepository {
 
     override suspend fun fetchWeather(location: String) : WeatherResponse {
-        Log.d("debbsasd", "111")
       return  weatherApi.fetchWeather(location)
     }
-
 
 }
