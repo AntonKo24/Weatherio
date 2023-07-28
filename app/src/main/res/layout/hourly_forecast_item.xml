@@ -1,43 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
+    android:layout_width="60dp"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    android:background="@color/back_1"
-    android:backgroundTint="@color/back_1">
+    android:background="@android:color/transparent"
+    android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="100dp"
-        android:layout_height="130dp"
-        android:background="@drawable/background_hourly"
-        android:orientation="vertical">
+    <TextView
+        android:id="@+id/hourlyTxt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="1 AM"
+        android:textAlignment="center"
+        android:textColor="#BFBCBC"
+        android:textSize="12sp" />
 
-        <TextView
-            android:id="@+id/hourlyTxt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:text="1 AM"
-            android:textAlignment="center"
-            android:textColor="#BFBCBC"
-            android:textSize="16sp" />
+    <ImageView
+        android:id="@+id/hourlyPic"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_gravity="center"
+        app:srcCompat="@drawable/partly_cloudy_day" />
 
-        <ImageView
-            android:id="@+id/hourlyPic"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_gravity="center"
-            app:srcCompat="@drawable/partly_cloudy_day" />
-
-        <TextView
-            android:id="@+id/tempTxt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:text="@string/Temperature"
-            android:textAlignment="center"
-            android:textColor="@color/white"
-            android:textSize="20sp" />
-    </LinearLayout>
-</androidx.cardview.widget.CardView>
+    <TextView
+        android:id="@+id/tempTxt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="@string/Temperature"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="16sp" />
+</LinearLayout>

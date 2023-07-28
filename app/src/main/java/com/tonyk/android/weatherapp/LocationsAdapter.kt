@@ -5,42 +5,58 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.tonyk.android.weatherapp.data.WeatherioItem
 import com.tonyk.android.weatherapp.databinding.LocationItemBinding
+import com.tonyk.android.weatherapp.util.ItemTouchHelperAdapter
 import com.tonyk.android.weatherapp.util.WeatherConverter
+import com.tonyk.android.weatherapp.util.WeatherIconMapper
+import java.util.Collections
 
-class LocationsAdapter(private val onLocationItemClick: (WeatherioItem) -> Unit, private val onLongItemClick: (WeatherioItem) -> Unit) :
-    ListAdapter<WeatherioItem, LocationsViewHolder>(LocationDiffCallback()) {
+class LocationsAdapter(
+    private val onLocationItemClick: (WeatherioItem) -> Unit,
+    private val deleteItem: (WeatherioItem) -> Unit,
+    private val onListReordered: (List<WeatherioItem>) -> Unit
+) : ListAdapter<WeatherioItem, LocationsViewHolder>(LocationDiffCallback()),
+    ItemTouchHelperAdapter {
+
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LocationsViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = LocationItemBinding.inflate(inflater, parent, false)
-        return LocationsViewHolder(binding, onLocationItemClick, onLongItemClick)
+        return LocationsViewHolder(binding, onLocationItemClick, deleteItem)
     }
 
     override fun onBindViewHolder(holder: LocationsViewHolder, position: Int) {
         val item = getItem(position)
         holder.bind(item)
     }
+
+    override fun onItemMove(fromPosition: Int, toPosition: Int) {
+        val list = currentList.toMutableList()
+        Collections.swap(list, fromPosition, toPosition)
+        submitList(list)
+        onListReordered(list)
+    }
 }
 
-class LocationsViewHolder(private val binding: LocationItemBinding, private val onLocationItemClick: (WeatherioItem) -> Unit, private val onLongItemClick: (WeatherioItem) -> Unit) :
+class LocationsViewHolder(private val binding: LocationItemBinding, private val onLocationItemClick: (WeatherioItem) -> Unit, private val deleteItem: (WeatherioItem) -> Unit) :
     RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(locationListItem: WeatherioItem) {
+    fun bind(item: WeatherioItem) {
         binding.apply {
-            resolvedAddressTxt.text = locationListItem.location.address
-            tempText.text = root.context.getString(R.string.Temperature, WeatherConverter.formatData(locationListItem.weather.currentConditions.temp))
+            resolvedAddressTxt.text = item.location.address
+            tempText.text = root.context.getString(R.string.Temperature, WeatherConverter.formatData(item.weather.currentConditions.temp))
             highLowText.text = root.context.getString(R.string.High_Low_temp,
-                WeatherConverter.formatData(locationListItem.weather.days[0].tempmax),
-                WeatherConverter.formatData(locationListItem.weather.days[0].tempmin))
-
+                WeatherConverter.formatData(item.weather.days[0].tempmax),
+                WeatherConverter.formatData(item.weather.days[0].tempmin))
+            weatherPic.load(WeatherIconMapper.getIconResourceId(item.weather.currentConditions.icon))
             root.setOnClickListener {
-                onLocationItemClick(locationListItem)
+                onLocationItemClick(item)
             }
-            root.setOnLongClickListener {
-                onLongItemClick(locationListItem)
-                true // or false, depending on whether you want to consume the event or not
+            deleteBtn.setOnClickListener {
+                deleteItem(item)
             }
         }
     }

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Semi-transparent background -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#44888888" /> <!-- Set a lower alpha value to make it more transparent -->
+            <corners android:radius="16dp" /> <!-- Adjust the radius as needed -->
+        </shape>
+    </item>
+</layer-list>

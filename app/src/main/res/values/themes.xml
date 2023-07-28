@@ -2,17 +2,20 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.WeatherApp" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimaryDark">@color/back_1</item>
+
     </style>
 
     <style name="Theme.WeatherApp" parent="Base.Theme.WeatherApp" />
 
 
-    <style name="SearchViewStyle" parent="Widget.AppCompat.SearchView">
-        <item name="queryBackground">@android:color/transparent</item>
-        <item name="queryHint">"Enter Location"</item>
-        <item name="iconifiedByDefault">false</item>
-        <item name="android:textColorHint">#AAAAAA</item>
-        <item name="android:editTextColor">@color/white</item>
+
+
+    <style name="AutocompleteFragmentStyle" parent="AutocompleteFragmentStyle" tools:ignore="ResourceCycle">
+        <!-- Customize the background color -->
+        <item name="android:background">#CDCDCD</item>
+        <!-- Customize the text color -->
+        <item name="android:textColor">#CDCDCD</item>
+        <!-- Customize other attributes as needed -->
     </style>
 
 </resources>

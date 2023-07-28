@@ -1,11 +1,6 @@
 package com.tonyk.android.weatherapp.viewmodel
 
-import android.content.Intent
-import android.provider.Settings
 import android.util.Log
-import androidx.appcompat.app.AlertDialog
-
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tonyk.android.weatherapp.api.CurrentWeatherItem
@@ -13,33 +8,27 @@ import com.tonyk.android.weatherapp.api.HourlyWeatherItem
 import com.tonyk.android.weatherapp.api.WeatherResponse
 import com.tonyk.android.weatherapp.data.LocationItem
 import com.tonyk.android.weatherapp.data.WeatherioItem
-import com.tonyk.android.weatherapp.database.LocationRepository
+import com.tonyk.android.weatherapp.database.LocationsDatabaseRepository
 import com.tonyk.android.weatherapp.repositories.WeatherApiRepository
-import com.tonyk.android.weatherapp.util.LocationService
-
-
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import java.time.LocalTime
 import javax.inject.Inject
 
-
 @HiltViewModel
-class WeatherViewModel @Inject constructor(private val weatherApiRepository: WeatherApiRepository
+class WeatherViewModel @Inject constructor(private val weatherApiRepository: WeatherApiRepository,
+                                           private val locationsDatabase : LocationsDatabaseRepository
 
 ) : ViewModel() {
 
-    private val _weather: MutableStateFlow<WeatherioItem> = MutableStateFlow(WeatherioItem(WeatherResponse("", emptyList(), CurrentWeatherItem("", 0.0, 0.0, 0.0, "", 0.0, ""), ""), LocationItem("", "")))
-    val weather: StateFlow<WeatherioItem> = _weather
+    private val _weatherioItem: MutableStateFlow<WeatherioItem> = MutableStateFlow(WeatherioItem(WeatherResponse("", emptyList(), CurrentWeatherItem("", 0.0, 0.0, 0.0, "", 0.0, ""), ""), LocationItem("", "", 0)))
+    val weatherioItem: StateFlow<WeatherioItem> = _weatherioItem
 
     private val _hoursList = mutableListOf<HourlyWeatherItem>()
     val hoursList: List<HourlyWeatherItem> get() = _hoursList
@@ -50,20 +39,32 @@ class WeatherViewModel @Inject constructor(private val weatherApiRepository: Wea
     private val _errorState: MutableSharedFlow<String> = MutableSharedFlow()
     val errorState: SharedFlow<String> = _errorState
 
-    private val locationRepository = LocationRepository.get()
 
-
-
-    private fun getList() {
+     fun getSavedLocations() {
         viewModelScope.launch {
-            locationRepository.getLocations().collect { newLocations ->
-
-                val existingLocations = _locationsList.value.map { it.location }.toSet()
+            locationsDatabase.getLocations().collect { newLocations ->
+                val existingLocations = _locationsList.value.map { it.location.coordinates }.toSet()
                 newLocations.forEach { newLocationItem ->
-                    if (!existingLocations.contains(newLocationItem)) {
+                    if (!existingLocations.contains(newLocationItem.coordinates)) {
                         val weather = weatherApiRepository.fetchWeather(newLocationItem.coordinates)
-                        _locationsList.value = _locationsList.value + WeatherioItem(weather, newLocationItem)
-                    }
+                        _locationsList.value = _locationsList.value + WeatherioItem(weather, newLocationItem)  }
+                }
+            }
+        }
+    }
+
+    fun updateViewModelList(dataList: List<WeatherioItem>) {
+        _locationsList.value = dataList
+    }
+    fun updateLocationsPosition(dataList: List<WeatherioItem>) {
+        viewModelScope.launch {
+            val locationList = dataList?.map { it.location }
+            locationList?.let { list ->
+                val new = list.mapIndexed { index, locationItem ->
+                    locationItem.copy(position = index)
+                }
+                new.forEach { locationItem ->
+                        locationsDatabase.updateLocation(locationItem)
                 }
             }
         }
@@ -71,28 +72,27 @@ class WeatherViewModel @Inject constructor(private val weatherApiRepository: Wea
 
     fun setWeather(weather : WeatherioItem) {
         processHourlyForecast(weather.weather)
-        _weather.value = weather
+        _weatherioItem.value = weather
     }
 
-
-    fun addLocation(location: LocationItem) {
+    fun addLocation(location : LocationItem) {
         viewModelScope.launch {
-            locationRepository.addLocation(location)
+            locationsDatabase.addLocation(location)
         }
     }
 
     fun deleteLocation(location: LocationItem) {
         viewModelScope.launch {
-            locationRepository.deleteLocation(location)
+            locationsDatabase.deleteLocation(location)
             _locationsList.value = _locationsList.value.filter { it.location != location }
         }
     }
 
-    fun initializeWeatherViewModel(location : LocationItem) {
+    fun initializeWeatherViewModel(coordinates: String, address: String) {
         viewModelScope.launch {
             try {
-                val weather = weatherApiRepository.fetchWeather(location.coordinates)
-                setWeather(WeatherioItem(weather, location))
+                val weather = weatherApiRepository.fetchWeather(coordinates)
+                setWeather(WeatherioItem(weather, LocationItem(coordinates, address, -1)))
             }
             catch (ex: Exception) {
                 Log.d("Exception", "$ex")
@@ -122,41 +122,11 @@ class WeatherViewModel @Inject constructor(private val weatherApiRepository: Wea
         _hoursList.addAll(hoursToAdd)
     }
 
-
-    private fun loadLast() {
+    fun loadLast() {
         viewModelScope.launch {
             _locationsList.filter { it.isNotEmpty() }.first().let { locations ->
                     setWeather(locations.first())
             }
         }
     }
-
-     fun loadCurrent(activity: FragmentActivity){
-        if (LocationService.isGPSEnabled(activity)) {
-            LocationService.getLocationData(activity) {
-                initializeWeatherViewModel(it)
-            }
-        }
-        else {
-            loadLast()
-            LocationService.showGPSAlertDialog(activity)
-        }
-    }
-
-    fun startFragment(activity: FragmentActivity) {
-        getList()
-        if (LocationService.isLocationPermissionGranted(activity)) {
-            loadCurrent(activity)
-        } else {
-            LocationService.requestLocationPermission(activity) { success ->
-                if (success) {
-                    loadCurrent(activity)
-                } else {
-                    loadLast()
-                }
-            }
-        }
-    }
-
-
 }

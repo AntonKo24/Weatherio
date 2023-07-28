@@ -10,7 +10,6 @@ import com.tonyk.android.weatherapp.util.DateConverter
 import com.tonyk.android.weatherapp.util.WeatherConverter
 import com.tonyk.android.weatherapp.util.WeatherIconMapper
 
-
 class TodayListHolder(private val binding: HourlyForecastItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(weather: HourlyWeatherItem) {
@@ -22,7 +21,6 @@ class TodayListHolder(private val binding: HourlyForecastItemBinding) : Recycler
 
     }
 }
-
 
 class TodayWeatherAdapter (private val weatherList : List<HourlyWeatherItem>) : RecyclerView.Adapter<TodayListHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodayListHolder {

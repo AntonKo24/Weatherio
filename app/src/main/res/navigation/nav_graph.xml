@@ -7,9 +7,9 @@
 
     <fragment
         android:id="@+id/todayFragment"
-        android:name="com.tonyk.android.weatherapp.ui.TodayFragment"
+        android:name="com.tonyk.android.weatherapp.ui.MainPageWeatherFragment"
         android:label="TodayFragment"
-        tools:layout="@layout/fragment_today" >
+        tools:layout="@layout/fragment_weather" >
         <action
             android:id="@+id/show_forecast"
             app:destination="@id/forecastFragment"
@@ -20,10 +20,8 @@
         <action
             android:id="@+id/manage_locations"
             app:destination="@id/hilt_ManageLocationsFragment"
-            app:enterAnim="@anim/nav_slide_in_left"
-            app:exitAnim="@anim/nav_slide_out_right"
-            app:popExitAnim="@anim/nav_slide_out_left"
-            app:popEnterAnim="@anim/nav_slide_in_right"/>
+            app:enterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
     </fragment>
     <fragment
         android:id="@+id/forecastFragment"
@@ -31,12 +29,15 @@
         android:label="ForecastFragment"
         tools:layout="@layout/fragment_forecast">
 
+        <argument
+            android:name="weather"
+            app:argType="com.tonyk.android.weatherapp.data.WeatherioItem" />
     </fragment>
     <fragment
         android:id="@+id/hilt_ManageLocationsFragment"
-        android:name="com.tonyk.android.weatherapp.ui.LocationsFragment"
+        android:name="com.tonyk.android.weatherapp.ui.ManageLocationsFragment"
         android:label="Hilt_ManageLocationsFragment"
-        tools:layout="@layout/fragment_locations"
+        tools:layout="@layout/fragment_manage_locations"
         >
         <action
             android:id="@+id/search_result"
@@ -44,11 +45,19 @@
     </fragment>
     <fragment
         android:id="@+id/searchDetailsFragment"
-        android:name="com.tonyk.android.weatherapp.ui.SearchDetailsFragment"
+        android:name="com.tonyk.android.weatherapp.ui.SearchPageWeatherFragment"
         android:label="SearchDetailsFragment" >
         <argument
-            android:name="location"
+            android:name="coordinates"
             app:argType="string" />
-        <argument android:name="address" />
+        <argument
+            android:name="address"
+            app:argType="string" />
+        <action
+            android:id="@+id/search_forecast"
+            app:destination="@id/forecastFragment" />
+        <argument
+            android:name="listSize"
+            app:argType="integer" />
     </fragment>
 </navigation>
