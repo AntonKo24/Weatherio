@@ -40,7 +40,7 @@ class WeatherViewModel @Inject constructor(private val weatherApiRepository: Wea
     val errorState: SharedFlow<String> = _errorState
 
 
-     fun getList() {
+     fun getSavedLocations() {
         viewModelScope.launch {
             locationsDatabase.getLocations().collect { newLocations ->
                 val existingLocations = _locationsList.value.map { it.location.coordinates }.toSet()

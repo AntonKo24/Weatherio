@@ -15,34 +15,29 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        weatherViewModel.getList()
+        weatherViewModel.getSavedLocations()
 
         if (LocationService.isLocationPermissionGranted(this)) {
-            if (LocationService.isGPSEnabled(this)) {
-                LocationService.getLocationData(this) { coordinates, address ->
-                    weatherViewModel.initializeWeatherViewModel(coordinates, address)
-                }
-            }
-            else {
-                weatherViewModel.loadLast()
-                LocationService.showGPSAlertDialog(this)
-            }
+            loadData()
         } else {
             LocationService.requestLocationPermission(this) { success ->
                 if (success) {
-                    if (LocationService.isGPSEnabled(this)) {
-                        LocationService.getLocationData(this) { coordinates, address ->
-                            weatherViewModel.initializeWeatherViewModel(coordinates, address)
-                        }
-                    }
-                    else {
-                        weatherViewModel.loadLast()
-                        LocationService.showGPSAlertDialog(this)
-                    }
+                    loadData()
                 } else {
                     weatherViewModel.loadLast()
                 }
             }
+        }
+    }
+    private fun loadData() {
+        if (LocationService.isGPSEnabled(this)) {
+            LocationService.getLocationData(this) { coordinates, address ->
+                weatherViewModel.initializeWeatherViewModel(coordinates, address)
+            }
+        }
+        else {
+            weatherViewModel.loadLast()
+            LocationService.showGPSAlertDialog(this)
         }
     }
 }

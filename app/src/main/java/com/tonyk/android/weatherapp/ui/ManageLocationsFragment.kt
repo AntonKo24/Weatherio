@@ -1,10 +1,13 @@
 package com.tonyk.android.weatherapp.ui
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -46,8 +49,11 @@ class ManageLocationsFragment: Fragment() {
         return binding.root
     }
 
+    @SuppressLint("ResourceAsColor")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
 
         binding.backButton.setOnClickListener {
             findNavController().popBackStack()
@@ -65,6 +71,8 @@ class ManageLocationsFragment: Fragment() {
             weatherViewModel.updateLocationsPosition(reorderedList)
         })
 
+
+
         binding.rcvLocations.adapter = adapter
 
         val itemTouchHelper = ItemTouchHelper(DragItemTouchHelperCallback(adapter))
@@ -73,8 +81,8 @@ class ManageLocationsFragment: Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 weatherViewModel.locationsList.collect {
-                    adapter.submitList(it)
 
+                    adapter.submitList(it)
                 }
             }
         }
@@ -83,6 +91,8 @@ class ManageLocationsFragment: Fragment() {
             childFragmentManager.findFragmentById(R.id.autocompleteFragment) as AutocompleteSupportFragment
         autocompleteFragment.setPlaceFields(listOf(Place.Field.NAME, Place.Field.LAT_LNG))
         autocompleteFragment.setTypesFilter(listOf(PlaceTypes.CITIES))
+        autocompleteFragment.view?.findViewById<EditText>(com.google.android.libraries.places.R.id.places_autocomplete_search_input)?.setTextColor(
+            ContextCompat.getColor(requireContext(), R.color.white))
         autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(place: Place) {
                 val coordinates = "${place.latLng?.latitude ?: 0.0},${place.latLng?.longitude ?: 0.0}"

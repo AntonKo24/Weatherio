@@ -10,13 +10,21 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import coil.load
+import com.tonyk.android.weatherapp.MenuLocationsAdapter
+import com.tonyk.android.weatherapp.R
+import com.tonyk.android.weatherapp.TodayWeatherAdapter
 import com.tonyk.android.weatherapp.databinding.FragmentWeatherBinding
 import com.tonyk.android.weatherapp.util.LocationService
 import com.tonyk.android.weatherapp.viewmodel.WeatherViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -35,19 +43,28 @@ class MainPageWeatherFragment : BaseWeatherFragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
+
+
         binding.checkButton.setOnClickListener {
-            lifecycleScope.launch {
-                binding.checkButton.visibility = View.GONE
+            binding.checkButton.load(R.drawable.ic_loading)
+            binding.checkButton.isEnabled = false
+            viewLifecycleOwner.lifecycleScope.launch {
                 if (LocationService.isLocationPermissionGranted(requireActivity())) {
                     if (LocationService.isGPSEnabled(requireActivity())) {
                         LocationService.getLocationData(requireActivity()) { coordinates, address ->
                             todayWeatherViewModel.initializeWeatherViewModel(coordinates, address)
                         }
-                    } else { LocationService.showGPSAlertDialog(requireActivity()) }
+                    } else {
+                        LocationService.showGPSAlertDialog(requireActivity())
+                    }
+                } else {
+                    Toast.makeText(context, "Permission is not granted", Toast.LENGTH_LONG).show()
                 }
-                else Toast.makeText(context, "Permission is not granted", Toast.LENGTH_LONG).show()
                 delay(3000)
-                binding.checkButton.visibility = View.VISIBLE
+                binding.checkButton.postDelayed({
+                    binding.checkButton.isEnabled = true
+                    binding.checkButton.load(R.drawable.ic_refresh)
+                }, 0)
             }
         }
 
@@ -56,13 +73,23 @@ class MainPageWeatherFragment : BaseWeatherFragment() {
             findNavController().navigate(MainPageWeatherFragmentDirections.showForecast(todayWeatherViewModel.weatherioItem.value)) }
         }
 
+        binding.menuRcv.layoutManager = LinearLayoutManager(context)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                todayWeatherViewModel.locationsList.collect() { it ->
+                    binding.menuRcv.adapter = MenuLocationsAdapter(it) { todayWeatherViewModel.setWeather(it)
+                    binding.drawerLayout.closeDrawer(GravityCompat.START) }
+                }
+            }
+        }
+
 
         val drawerLayout = binding.drawerLayout
         val toggle = ActionBarDrawerToggle(requireActivity(), drawerLayout, 0, 0)
         drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
         drawerLayout.setScrimColor(ContextCompat.getColor(requireContext(), android.R.color.transparent))
-        binding.settingsBtn.setOnClickListener {
+        binding.manageButton.setOnClickListener {
             drawerLayout.closeDrawer(GravityCompat.START)
             findNavController().navigate(MainPageWeatherFragmentDirections.manageLocations())
         }

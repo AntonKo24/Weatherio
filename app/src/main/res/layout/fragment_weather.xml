@@ -69,12 +69,12 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="32dp"
                         android:layout_marginEnd="16dp"
                         android:background="@drawable/background_2"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/todayDateTxt">
+                        app:layout_constraintTop_toBottomOf="@+id/manageLocations">
 
                         <TextView
                             android:id="@+id/locationTxt"
@@ -285,8 +285,8 @@
 
                     <ImageView
                         android:id="@+id/manageLocations"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
                         app:layout_constraintBottom_toTopOf="@+id/todayDateTxt"
@@ -296,8 +296,8 @@
 
                     <ImageView
                         android:id="@+id/check_button"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
                         android:layout_marginEnd="16dp"
                         app:layout_constraintBottom_toBottomOf="@+id/manageLocations"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -333,7 +333,7 @@
                             android:textSize="16sp" />
 
                         <View
-                            android:id="@+id/lineView"
+                            android:id="@+id/lineView2"
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
                             android:layout_marginStart="16dp"
@@ -359,31 +359,90 @@
             android:id="@+id/navDrawer"
             android:layout_width="300dp"
             android:layout_height="match_parent"
-            android:layout_gravity="start"
-            android:background="@android:color/transparent">
-
-            <!-- Add your navigation drawer content here -->
-
+            android:layout_gravity="start">
 
             <ImageView
                 android:id="@+id/settingsBtn"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_settings" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
+            <ScrollView
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/settingsBtn" />
+                app:layout_constraintTop_toBottomOf="@+id/settingsBtn"
+                app:layout_constraintVertical_bias="1.0">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="-12dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="16dp">
+
+                    <TextView
+                        android:id="@+id/textView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="32dp"
+                        android:layout_marginTop="16dp"
+                        android:text="My locations"
+                        android:textColor="#FFFFFF"
+                        android:textSize="24sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <View
+                        android:id="@+id/lineView1"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="24dp"
+                        android:background="#404040"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/menuRcv"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="24dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/lineView1" />
+
+                    <Button
+                        android:id="@+id/manageButton"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="24dp"
+                        android:layout_marginBottom="24dp"
+                        android:background="@drawable/button_background"
+                        android:fontFamily="@font/roboto"
+                        android:text="Manage Locations"
+                        android:textColor="@color/white"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="@+id/menuRcv"
+                        app:layout_constraintStart_toStartOf="@+id/menuRcv"
+                        app:layout_constraintTop_toBottomOf="@+id/menuRcv" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </ScrollView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
