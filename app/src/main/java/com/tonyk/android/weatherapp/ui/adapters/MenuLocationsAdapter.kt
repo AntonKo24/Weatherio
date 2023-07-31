@@ -1,17 +1,18 @@
-package com.tonyk.android.weatherapp
+package com.tonyk.android.weatherapp.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import com.tonyk.android.weatherapp.data.WeatherioItem
+import com.tonyk.android.weatherapp.R
+import com.tonyk.android.weatherapp.model.Weatherio
 import com.tonyk.android.weatherapp.databinding.MenuLocationItemBinding
 import com.tonyk.android.weatherapp.util.WeatherConverter
 import com.tonyk.android.weatherapp.util.WeatherIconMapper
 
-class MenuLocationHolder(private val binding: MenuLocationItemBinding, private val onLocationItemClick: (WeatherioItem) -> Unit) : RecyclerView.ViewHolder(binding.root) {
+class MenuLocationHolder(private val binding: MenuLocationItemBinding, private val onLocationItemClick: (Weatherio) -> Unit) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(item: WeatherioItem) {
+    fun bind(item: Weatherio) {
         binding.apply {
             itemAddress.text = item.location.address
             itemPic.load(WeatherIconMapper.getIconResourceId(item.weather.currentConditions.icon))
@@ -22,7 +23,7 @@ class MenuLocationHolder(private val binding: MenuLocationItemBinding, private v
     }
 }
 
-class MenuLocationsAdapter (private val weatherList : List<WeatherioItem>, private val onLocationItemClick: (WeatherioItem) -> Unit) : RecyclerView.Adapter<MenuLocationHolder>() {
+class MenuLocationsAdapter (private val weatherList : List<Weatherio>, private val onLocationItemClick: (Weatherio) -> Unit) : RecyclerView.Adapter<MenuLocationHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MenuLocationHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = MenuLocationItemBinding.inflate(inflater, parent, false)

@@ -1,8 +1,8 @@
-package com.tonyk.android.weatherapp.util
+package com.tonyk.android.weatherapp.util.itemtouchhelper
 
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.tonyk.android.weatherapp.LocationsAdapter
+import com.tonyk.android.weatherapp.ui.adapters.LocationsAdapter
 
 class DragItemTouchHelperCallback(private val adapter: LocationsAdapter) : ItemTouchHelper.Callback() {
 

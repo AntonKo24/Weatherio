@@ -1,11 +1,10 @@
 package com.tonyk.android.weatherapp.api
 
+import com.tonyk.android.weatherapp.util.Constants
 import okhttp3.HttpUrl
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
-
-private const val API_KEY = "TK6K4VCW7447EXSHF7S768U6F"
 
 
 class WeatherInterceptor : Interceptor {
@@ -13,7 +12,7 @@ class WeatherInterceptor : Interceptor {
         val originalRequest: Request = chain.request()
         val newUrl: HttpUrl = originalRequest.url.newBuilder()
 
-            .addQueryParameter("key", API_KEY)
+            .addQueryParameter("key", Constants.WEATHER_API_KEY)
             .addQueryParameter("unitGroup", "metric")
 
             .build()

@@ -1,7 +1,8 @@
-package com.tonyk.android.weatherapp.repositories
+package com.tonyk.android.weatherapp.api
 
 import com.tonyk.android.weatherapp.api.WeatherApi
-import com.tonyk.android.weatherapp.api.WeatherResponse
+import com.tonyk.android.weatherapp.api.WeatherApiRepository
+import com.tonyk.android.weatherapp.model.WeatherResponse
 import javax.inject.Inject
 import javax.inject.Singleton
 

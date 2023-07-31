@@ -1,4 +1,4 @@
-package com.tonyk.android.weatherapp.ui
+package com.tonyk.android.weatherapp.ui.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,34 +16,34 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
-import com.tonyk.android.weatherapp.MenuLocationsAdapter
+import com.tonyk.android.weatherapp.ui.adapters.MenuLocationsAdapter
 import com.tonyk.android.weatherapp.R
-import com.tonyk.android.weatherapp.TodayWeatherAdapter
 import com.tonyk.android.weatherapp.databinding.FragmentWeatherBinding
+
 import com.tonyk.android.weatherapp.util.LocationService
-import com.tonyk.android.weatherapp.viewmodel.WeatherViewModel
+import com.tonyk.android.weatherapp.viewmodel.SharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class MainPageWeatherFragment : BaseWeatherFragment() {
+class MainPageWeatherFragment : BaseWeatherScreenFragment() {
 
-    private val todayWeatherViewModel: WeatherViewModel by activityViewModels()
+    private val sharedViewModel: SharedViewModel by activityViewModels()
 
 
     override fun inflateBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentWeatherBinding {
         return FragmentWeatherBinding.inflate(inflater, container, false)
     }
-    override fun getWeatherViewModel(): WeatherViewModel {
-        return todayWeatherViewModel
+    override fun getWeatherViewModel(): SharedViewModel {
+        return sharedViewModel
     }
+
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
-
+        observeErrorState(getWeatherViewModel())
 
         binding.checkButton.setOnClickListener {
             binding.checkButton.load(R.drawable.ic_loading)
@@ -52,7 +52,7 @@ class MainPageWeatherFragment : BaseWeatherFragment() {
                 if (LocationService.isLocationPermissionGranted(requireActivity())) {
                     if (LocationService.isGPSEnabled(requireActivity())) {
                         LocationService.getLocationData(requireActivity()) { coordinates, address ->
-                            todayWeatherViewModel.initializeWeatherViewModel(coordinates, address)
+                            sharedViewModel.loadWeatherResult(coordinates, address)
                         }
                     } else {
                         LocationService.showGPSAlertDialog(requireActivity())
@@ -69,19 +69,24 @@ class MainPageWeatherFragment : BaseWeatherFragment() {
         }
 
         binding.checkForecastBtn.setOnClickListener {
-            if (todayWeatherViewModel.weatherioItem.value.weather.days.isNotEmpty()) {
-            findNavController().navigate(MainPageWeatherFragmentDirections.showForecast(todayWeatherViewModel.weatherioItem.value)) }
+            if (sharedViewModel.weatherio.value.weather.days.isNotEmpty()) {
+            findNavController().navigate(
+                MainPageWeatherFragmentDirections.showForecast(
+                    sharedViewModel.weatherio.value
+                )
+            ) }
         }
 
         binding.menuRcv.layoutManager = LinearLayoutManager(context)
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                todayWeatherViewModel.locationsList.collect() { it ->
-                    binding.menuRcv.adapter = MenuLocationsAdapter(it) { todayWeatherViewModel.setWeather(it)
+                sharedViewModel.locationsList.collect() { it ->
+                    binding.menuRcv.adapter = MenuLocationsAdapter(it) { sharedViewModel.setWeather(it)
                     binding.drawerLayout.closeDrawer(GravityCompat.START) }
                 }
             }
         }
+
 
 
         val drawerLayout = binding.drawerLayout
@@ -97,6 +102,11 @@ class MainPageWeatherFragment : BaseWeatherFragment() {
             drawerLayout.openDrawer(GravityCompat.START)
         }
 
+        binding.settingsBtn.setOnClickListener {
+            drawerLayout.closeDrawer(GravityCompat.START)
+            findNavController().navigate(MainPageWeatherFragmentDirections.checkSettings())
+        }
+
         drawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
             override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
                 binding.mainContent.translationX = drawerView.width * slideOffset
@@ -106,6 +116,7 @@ class MainPageWeatherFragment : BaseWeatherFragment() {
             override fun onDrawerStateChanged(newState: Int) {}
         })
     }
+
 }
 
 

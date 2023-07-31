@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/todayFragment"
-        android:name="com.tonyk.android.weatherapp.ui.MainPageWeatherFragment"
+        android:name="com.tonyk.android.weatherapp.ui.fragments.MainPageWeatherFragment"
         android:label="TodayFragment"
         tools:layout="@layout/fragment_weather" >
         <action
@@ -22,30 +22,37 @@
             app:destination="@id/hilt_ManageLocationsFragment"
             app:enterAnim="@android:anim/fade_in"
             app:popExitAnim="@android:anim/fade_out" />
+        <action
+            android:id="@+id/check_settings"
+            app:destination="@id/settingsFragment" />
     </fragment>
     <fragment
         android:id="@+id/forecastFragment"
-        android:name="com.tonyk.android.weatherapp.ui.ForecastFragment"
+        android:name="com.tonyk.android.weatherapp.ui.fragments.ForecastFragment"
         android:label="ForecastFragment"
         tools:layout="@layout/fragment_forecast">
 
         <argument
             android:name="weather"
-            app:argType="com.tonyk.android.weatherapp.data.WeatherioItem" />
+            app:argType="com.tonyk.android.weatherapp.model.Weatherio" />
     </fragment>
     <fragment
         android:id="@+id/hilt_ManageLocationsFragment"
-        android:name="com.tonyk.android.weatherapp.ui.ManageLocationsFragment"
+        android:name="com.tonyk.android.weatherapp.ui.fragments.ManageLocationsFragment"
         android:label="Hilt_ManageLocationsFragment"
         tools:layout="@layout/fragment_manage_locations"
         >
         <action
             android:id="@+id/search_result"
-            app:destination="@id/searchDetailsFragment" />
+            app:destination="@id/searchDetailsFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
     </fragment>
     <fragment
         android:id="@+id/searchDetailsFragment"
-        android:name="com.tonyk.android.weatherapp.ui.SearchPageWeatherFragment"
+        android:name="com.tonyk.android.weatherapp.ui.fragments.SearchPageWeatherFragment"
         android:label="SearchDetailsFragment" >
         <argument
             android:name="coordinates"
@@ -55,9 +62,17 @@
             app:argType="string" />
         <action
             android:id="@+id/search_forecast"
-            app:destination="@id/forecastFragment" />
+            app:destination="@id/forecastFragment"
+            app:enterAnim="@anim/nav_slide_in_right"
+            app:exitAnim="@anim/nav_slide_out_left"
+            app:popEnterAnim="@anim/nav_slide_in_left"
+            app:popExitAnim="@anim/nav_slide_out_right" />
         <argument
             android:name="listSize"
             app:argType="integer" />
     </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.tonyk.android.weatherapp.ui.fragments.SettingsFragment"
+        android:label="SettingsFragment" />
 </navigation>

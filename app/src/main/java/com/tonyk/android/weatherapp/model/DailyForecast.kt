@@ -1,14 +1,14 @@
-package com.tonyk.android.weatherapp.api
+package com.tonyk.android.weatherapp.model
 
 import com.squareup.moshi.JsonClass
 
 
 @JsonClass(generateAdapter = true)
-data class DailyWeatherItem (
+data class DailyForecast (
     val datetime : String,
     val tempmax : Double,
     val tempmin : Double,
-    val hours : List<HourlyWeatherItem>,
+    val hours : List<HourlyForecast>,
     val conditions : String,
     val humidity : Double,
     val windspeed : Double,

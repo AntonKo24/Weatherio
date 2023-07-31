@@ -1,9 +1,10 @@
-package com.tonyk.android.weatherapp.ui
+package com.tonyk.android.weatherapp.ui.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -11,22 +12,22 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
 import com.tonyk.android.weatherapp.R
-import com.tonyk.android.weatherapp.TodayWeatherAdapter
+import com.tonyk.android.weatherapp.ui.adapters.TodayWeatherAdapter
 import com.tonyk.android.weatherapp.databinding.FragmentWeatherBinding
 import com.tonyk.android.weatherapp.util.DateConverter
 import com.tonyk.android.weatherapp.util.WeatherConverter
 import com.tonyk.android.weatherapp.util.WeatherIconMapper
-import com.tonyk.android.weatherapp.viewmodel.WeatherViewModel
+import com.tonyk.android.weatherapp.viewmodel.BaseViewModel
 import kotlinx.coroutines.launch
 
 
-abstract class BaseWeatherFragment : Fragment() {
+abstract class BaseWeatherScreenFragment : Fragment() {
 
     private var _binding: FragmentWeatherBinding? = null
     protected val binding: FragmentWeatherBinding
         get() = checkNotNull(_binding)
     abstract fun inflateBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentWeatherBinding
-    abstract fun getWeatherViewModel(): WeatherViewModel
+    abstract fun getWeatherViewModel(): BaseViewModel
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -43,10 +44,10 @@ abstract class BaseWeatherFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-    private fun observeWeatherData(weatherViewModel: WeatherViewModel) {
+    private fun observeWeatherData(weatherViewModel: BaseViewModel) {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                weatherViewModel.weatherioItem.collect { it ->
+                weatherViewModel.weatherio.collect { it ->
                     binding.apply {
                         locationTxt.text = it.location.address
                         currentConditions.text = it.weather.currentConditions.conditions
@@ -79,6 +80,15 @@ abstract class BaseWeatherFragment : Fragment() {
                             )
                         }
                     }
+                }
+            }
+        }
+    }
+    protected fun observeErrorState(weatherViewModel: BaseViewModel) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                weatherViewModel.errorState.collect { error ->
+                    Toast.makeText(requireContext(), error, Toast.LENGTH_LONG).show()
                 }
             }
         }

@@ -1,22 +1,23 @@
-package com.tonyk.android.weatherapp
+package com.tonyk.android.weatherapp.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.fragment.app.activityViewModels
+import com.tonyk.android.weatherapp.R
 import com.tonyk.android.weatherapp.util.LocationService
-import com.tonyk.android.weatherapp.viewmodel.WeatherViewModel
+import com.tonyk.android.weatherapp.viewmodel.SharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private val weatherViewModel : WeatherViewModel by viewModels()
+    private val sharedViewModel: SharedViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        weatherViewModel.getSavedLocations()
-
+        sharedViewModel.getSavedLocations()
         if (LocationService.isLocationPermissionGranted(this)) {
             loadData()
         } else {
@@ -24,19 +25,20 @@ class MainActivity : AppCompatActivity() {
                 if (success) {
                     loadData()
                 } else {
-                    weatherViewModel.loadLast()
+                    sharedViewModel.loadLast()
                 }
             }
         }
     }
+
     private fun loadData() {
         if (LocationService.isGPSEnabled(this)) {
             LocationService.getLocationData(this) { coordinates, address ->
-                weatherViewModel.initializeWeatherViewModel(coordinates, address)
+                sharedViewModel.loadWeatherResult(coordinates, address)
             }
         }
         else {
-            weatherViewModel.loadLast()
+            sharedViewModel.loadLast()
             LocationService.showGPSAlertDialog(this)
         }
     }
