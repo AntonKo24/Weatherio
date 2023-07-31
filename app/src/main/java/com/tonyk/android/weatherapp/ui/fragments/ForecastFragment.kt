@@ -1,4 +1,4 @@
-package com.tonyk.android.weatherapp.ui
+package com.tonyk.android.weatherapp.ui.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,7 +13,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
-import com.tonyk.android.weatherapp.ForecastWeatherAdapter
+import com.tonyk.android.weatherapp.ui.adapters.ForecastWeatherAdapter
 import com.tonyk.android.weatherapp.R
 import com.tonyk.android.weatherapp.databinding.FragmentForecastBinding
 import com.tonyk.android.weatherapp.util.WeatherConverter
@@ -43,7 +43,6 @@ class ForecastFragment: Fragment() {
         return binding.root
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -64,7 +63,6 @@ class ForecastFragment: Fragment() {
                             tmrwPressure.text = getString(R.string.PressureData, WeatherConverter.formatData(it.weather.days[1].pressure))
                             tmrwWindspeed.text = getString(R.string.WindspeedData, WeatherConverter.formatData(it.weather.days[1].windspeed))
                             tmrwPic.load(WeatherIconMapper.getIconResourceId(it.weather.days[1].icon))
-
                             rcvForecast.adapter = ForecastWeatherAdapter(it.weather.days)
                         }
                     }

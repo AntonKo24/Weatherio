@@ -1,7 +1,6 @@
-package com.tonyk.android.weatherapp.data
+package com.tonyk.android.weatherapp.model
 
 
-import com.tonyk.android.weatherapp.api.WeatherResponse
 import java.io.Serializable
 
 data class WeatherioItem (

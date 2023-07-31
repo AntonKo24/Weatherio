@@ -1,4 +1,4 @@
-package com.tonyk.android.weatherapp.data
+package com.tonyk.android.weatherapp.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

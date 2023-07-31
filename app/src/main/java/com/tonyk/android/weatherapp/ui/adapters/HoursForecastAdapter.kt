@@ -1,18 +1,20 @@
-package com.tonyk.android.weatherapp
+package com.tonyk.android.weatherapp.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import com.tonyk.android.weatherapp.api.HourlyWeatherItem
-import com.tonyk.android.weatherapp.databinding.HourlyForecastItemBinding
+import com.tonyk.android.weatherapp.R
+import com.tonyk.android.weatherapp.databinding.HoursForecastItemBinding
+import com.tonyk.android.weatherapp.model.HourlyForecastItem
+
 import com.tonyk.android.weatherapp.util.DateConverter
 import com.tonyk.android.weatherapp.util.WeatherConverter
 import com.tonyk.android.weatherapp.util.WeatherIconMapper
 
-class TodayListHolder(private val binding: HourlyForecastItemBinding) : RecyclerView.ViewHolder(binding.root) {
+class TodayListHolder(private val binding: HoursForecastItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(weather: HourlyWeatherItem) {
+    fun bind(weather: HourlyForecastItem) {
         binding.apply {
             hourlyTxt.text = DateConverter.formatTime(weather.datetime)
             tempTxt.text = root.context.getString(R.string.Temperature,WeatherConverter.formatData(weather.temp))
@@ -22,10 +24,10 @@ class TodayListHolder(private val binding: HourlyForecastItemBinding) : Recycler
     }
 }
 
-class TodayWeatherAdapter (private val weatherList : List<HourlyWeatherItem>) : RecyclerView.Adapter<TodayListHolder>() {
+class TodayWeatherAdapter (private val weatherList : List<HourlyForecastItem>) : RecyclerView.Adapter<TodayListHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodayListHolder {
          val inflater = LayoutInflater.from(parent.context)
-        val binding = HourlyForecastItemBinding.inflate(inflater, parent, false)
+        val binding = HoursForecastItemBinding.inflate(inflater, parent, false)
         return TodayListHolder(binding)
     }
 

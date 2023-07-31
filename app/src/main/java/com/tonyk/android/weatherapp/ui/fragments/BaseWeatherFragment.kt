@@ -1,9 +1,10 @@
-package com.tonyk.android.weatherapp.ui
+package com.tonyk.android.weatherapp.ui.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -11,7 +12,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import coil.load
 import com.tonyk.android.weatherapp.R
-import com.tonyk.android.weatherapp.TodayWeatherAdapter
+import com.tonyk.android.weatherapp.ui.adapters.TodayWeatherAdapter
 import com.tonyk.android.weatherapp.databinding.FragmentWeatherBinding
 import com.tonyk.android.weatherapp.util.DateConverter
 import com.tonyk.android.weatherapp.util.WeatherConverter
@@ -79,6 +80,15 @@ abstract class BaseWeatherFragment : Fragment() {
                             )
                         }
                     }
+                }
+            }
+        }
+    }
+    protected fun observeErrorState(weatherViewModel: WeatherViewModel) {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                weatherViewModel.errorState.collect { error ->
+                    Toast.makeText(requireContext(), error, Toast.LENGTH_LONG).show()
                 }
             }
         }

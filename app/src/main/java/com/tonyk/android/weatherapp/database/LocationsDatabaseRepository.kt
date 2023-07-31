@@ -1,6 +1,6 @@
 package com.tonyk.android.weatherapp.database
 
-import com.tonyk.android.weatherapp.data.LocationItem
+import com.tonyk.android.weatherapp.model.LocationItem
 import kotlinx.coroutines.flow.Flow
 
 interface LocationsDatabaseRepository {

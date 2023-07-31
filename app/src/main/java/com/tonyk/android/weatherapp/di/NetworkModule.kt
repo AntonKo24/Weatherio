@@ -1,9 +1,9 @@
 package com.tonyk.android.weatherapp.di
 
-import com.tonyk.android.weatherapp.repositories.WeatherApiRepository
+import com.tonyk.android.weatherapp.api.WeatherApiRepository
 import com.tonyk.android.weatherapp.api.WeatherApi
 import com.tonyk.android.weatherapp.api.WeatherInterceptor
-import com.tonyk.android.weatherapp.repositories.WeatherApiRepositoryImpl
+import com.tonyk.android.weatherapp.api.WeatherApiRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -1,10 +1,10 @@
-package com.tonyk.android.weatherapp.api
+package com.tonyk.android.weatherapp.model
 
 import com.squareup.moshi.JsonClass
 
 
 @JsonClass(generateAdapter = true)
-data class CurrentWeatherItem (
+data class CurrentConditionsItem (
     val datetime : String,
     val temp: Double,
     val windspeed : Double,

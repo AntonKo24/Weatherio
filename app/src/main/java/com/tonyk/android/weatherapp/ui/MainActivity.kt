@@ -1,8 +1,9 @@
-package com.tonyk.android.weatherapp
+package com.tonyk.android.weatherapp.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
+import com.tonyk.android.weatherapp.R
 import com.tonyk.android.weatherapp.util.LocationService
 import com.tonyk.android.weatherapp.viewmodel.WeatherViewModel
 import dagger.hilt.android.AndroidEntryPoint

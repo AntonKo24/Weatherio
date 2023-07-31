@@ -1,6 +1,5 @@
-package com.tonyk.android.weatherapp.ui
+package com.tonyk.android.weatherapp.ui.fragments
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -21,10 +20,10 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.model.PlaceTypes
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
-import com.tonyk.android.weatherapp.LocationsAdapter
+import com.tonyk.android.weatherapp.ui.adapters.LocationsAdapter
 import com.tonyk.android.weatherapp.R
 import com.tonyk.android.weatherapp.databinding.FragmentManageLocationsBinding
-import com.tonyk.android.weatherapp.util.DragItemTouchHelperCallback
+import com.tonyk.android.weatherapp.util.itemtouchhelper.DragItemTouchHelperCallback
 import com.tonyk.android.weatherapp.viewmodel.WeatherViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -49,17 +48,16 @@ class ManageLocationsFragment: Fragment() {
         return binding.root
     }
 
-    @SuppressLint("ResourceAsColor")
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
 
         binding.backButton.setOnClickListener {
             findNavController().popBackStack()
         }
-        binding.rcvLocations.layoutManager = LinearLayoutManager(context)
 
+
+        binding.rcvLocations.layoutManager = LinearLayoutManager(context)
         val adapter = LocationsAdapter({ item ->
             weatherViewModel.setWeather(item)
             findNavController().popBackStack()
@@ -70,9 +68,6 @@ class ManageLocationsFragment: Fragment() {
             weatherViewModel.updateViewModelList(reorderedList)
             weatherViewModel.updateLocationsPosition(reorderedList)
         })
-
-
-
         binding.rcvLocations.adapter = adapter
 
         val itemTouchHelper = ItemTouchHelper(DragItemTouchHelperCallback(adapter))
@@ -81,8 +76,14 @@ class ManageLocationsFragment: Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 weatherViewModel.locationsList.collect {
-
                     adapter.submitList(it)
+                }
+            }
+        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                weatherViewModel.errorState.collect { error ->
+                    Toast.makeText(requireContext(), error, Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -98,7 +99,12 @@ class ManageLocationsFragment: Fragment() {
                 val coordinates = "${place.latLng?.latitude ?: 0.0},${place.latLng?.longitude ?: 0.0}"
                 val address = place.name ?: ""
                 if (weatherViewModel.locationsList.value.none { it.location.coordinates == coordinates }) {
-                    findNavController().navigate(ManageLocationsFragmentDirections.searchResult(coordinates, address, weatherViewModel.locationsList.value.size))
+                    findNavController().navigate(ManageLocationsFragmentDirections.searchResult(
+                            coordinates,
+                            address,
+                            weatherViewModel.locationsList.value.size
+                        )
+                    )
                 } else {
                     Toast.makeText(requireContext(), "Location is already in the list", Toast.LENGTH_LONG).show()
                 }
@@ -107,6 +113,8 @@ class ManageLocationsFragment: Fragment() {
                 Toast.makeText(requireContext(), "Location not picked", Toast.LENGTH_SHORT).show()
             }
         })
+
+
     }
 
     override fun onDestroyView() {

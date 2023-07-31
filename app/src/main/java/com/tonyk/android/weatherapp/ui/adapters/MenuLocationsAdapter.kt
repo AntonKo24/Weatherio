@@ -1,10 +1,11 @@
-package com.tonyk.android.weatherapp
+package com.tonyk.android.weatherapp.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import com.tonyk.android.weatherapp.data.WeatherioItem
+import com.tonyk.android.weatherapp.R
+import com.tonyk.android.weatherapp.model.WeatherioItem
 import com.tonyk.android.weatherapp.databinding.MenuLocationItemBinding
 import com.tonyk.android.weatherapp.util.WeatherConverter
 import com.tonyk.android.weatherapp.util.WeatherIconMapper
