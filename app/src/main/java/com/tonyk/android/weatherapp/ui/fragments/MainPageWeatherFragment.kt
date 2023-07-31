@@ -19,24 +19,28 @@ import coil.load
 import com.tonyk.android.weatherapp.ui.adapters.MenuLocationsAdapter
 import com.tonyk.android.weatherapp.R
 import com.tonyk.android.weatherapp.databinding.FragmentWeatherBinding
+
 import com.tonyk.android.weatherapp.util.LocationService
-import com.tonyk.android.weatherapp.viewmodel.WeatherViewModel
+import com.tonyk.android.weatherapp.viewmodel.SharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class MainPageWeatherFragment : BaseWeatherFragment() {
+class MainPageWeatherFragment : BaseWeatherScreenFragment() {
 
-    private val todayWeatherViewModel: WeatherViewModel by activityViewModels()
+    private val sharedViewModel: SharedViewModel by activityViewModels()
 
 
     override fun inflateBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentWeatherBinding {
         return FragmentWeatherBinding.inflate(inflater, container, false)
     }
-    override fun getWeatherViewModel(): WeatherViewModel {
-        return todayWeatherViewModel
+    override fun getWeatherViewModel(): SharedViewModel {
+        return sharedViewModel
     }
+
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeErrorState(getWeatherViewModel())
@@ -48,7 +52,7 @@ class MainPageWeatherFragment : BaseWeatherFragment() {
                 if (LocationService.isLocationPermissionGranted(requireActivity())) {
                     if (LocationService.isGPSEnabled(requireActivity())) {
                         LocationService.getLocationData(requireActivity()) { coordinates, address ->
-                            todayWeatherViewModel.initializeWeatherViewModel(coordinates, address)
+                            sharedViewModel.loadWeatherResult(coordinates, address)
                         }
                     } else {
                         LocationService.showGPSAlertDialog(requireActivity())
@@ -65,10 +69,10 @@ class MainPageWeatherFragment : BaseWeatherFragment() {
         }
 
         binding.checkForecastBtn.setOnClickListener {
-            if (todayWeatherViewModel.weatherio.value.weather.days.isNotEmpty()) {
+            if (sharedViewModel.weatherio.value.weather.days.isNotEmpty()) {
             findNavController().navigate(
                 MainPageWeatherFragmentDirections.showForecast(
-                    todayWeatherViewModel.weatherio.value
+                    sharedViewModel.weatherio.value
                 )
             ) }
         }
@@ -76,8 +80,8 @@ class MainPageWeatherFragment : BaseWeatherFragment() {
         binding.menuRcv.layoutManager = LinearLayoutManager(context)
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                todayWeatherViewModel.locationsList.collect() { it ->
-                    binding.menuRcv.adapter = MenuLocationsAdapter(it) { todayWeatherViewModel.setWeather(it)
+                sharedViewModel.locationsList.collect() { it ->
+                    binding.menuRcv.adapter = MenuLocationsAdapter(it) { sharedViewModel.setWeather(it)
                     binding.drawerLayout.closeDrawer(GravityCompat.START) }
                 }
             }
@@ -112,6 +116,7 @@ class MainPageWeatherFragment : BaseWeatherFragment() {
             override fun onDrawerStateChanged(newState: Int) {}
         })
     }
+
 }
 
 

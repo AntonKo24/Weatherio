@@ -17,17 +17,17 @@ import com.tonyk.android.weatherapp.databinding.FragmentWeatherBinding
 import com.tonyk.android.weatherapp.util.DateConverter
 import com.tonyk.android.weatherapp.util.WeatherConverter
 import com.tonyk.android.weatherapp.util.WeatherIconMapper
-import com.tonyk.android.weatherapp.viewmodel.WeatherViewModel
+import com.tonyk.android.weatherapp.viewmodel.BaseViewModel
 import kotlinx.coroutines.launch
 
 
-abstract class BaseWeatherFragment : Fragment() {
+abstract class BaseWeatherScreenFragment : Fragment() {
 
     private var _binding: FragmentWeatherBinding? = null
     protected val binding: FragmentWeatherBinding
         get() = checkNotNull(_binding)
     abstract fun inflateBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentWeatherBinding
-    abstract fun getWeatherViewModel(): WeatherViewModel
+    abstract fun getWeatherViewModel(): BaseViewModel
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -44,7 +44,7 @@ abstract class BaseWeatherFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-    private fun observeWeatherData(weatherViewModel: WeatherViewModel) {
+    private fun observeWeatherData(weatherViewModel: BaseViewModel) {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 weatherViewModel.weatherio.collect { it ->
@@ -84,7 +84,7 @@ abstract class BaseWeatherFragment : Fragment() {
             }
         }
     }
-    protected fun observeErrorState(weatherViewModel: WeatherViewModel) {
+    protected fun observeErrorState(weatherViewModel: BaseViewModel) {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 weatherViewModel.errorState.collect { error ->

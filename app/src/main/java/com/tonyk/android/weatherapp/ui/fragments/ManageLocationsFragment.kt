@@ -24,7 +24,7 @@ import com.tonyk.android.weatherapp.ui.adapters.LocationsAdapter
 import com.tonyk.android.weatherapp.R
 import com.tonyk.android.weatherapp.databinding.FragmentManageLocationsBinding
 import com.tonyk.android.weatherapp.util.itemtouchhelper.DragItemTouchHelperCallback
-import com.tonyk.android.weatherapp.viewmodel.WeatherViewModel
+import com.tonyk.android.weatherapp.viewmodel.SharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -34,7 +34,7 @@ class ManageLocationsFragment: Fragment() {
     private val binding
         get () = checkNotNull(_binding)
 
-    private val weatherViewModel : WeatherViewModel by activityViewModels()
+    private val sharedViewModel : SharedViewModel by activityViewModels()
 
 
     override fun onCreateView(
@@ -59,14 +59,14 @@ class ManageLocationsFragment: Fragment() {
 
         binding.rcvLocations.layoutManager = LinearLayoutManager(context)
         val adapter = LocationsAdapter({ item ->
-            weatherViewModel.setWeather(item)
+            sharedViewModel.setWeather(item)
             findNavController().popBackStack()
         }, { item ->
-            weatherViewModel.deleteLocation(item.location)
-            weatherViewModel.updateLocationsPosition(weatherViewModel.locationsList.value)
+            sharedViewModel.deleteLocation(item.location)
+            sharedViewModel.updateLocationsPosition(sharedViewModel.locationsList.value)
         }, { reorderedList ->
-            weatherViewModel.updateViewModelList(reorderedList)
-            weatherViewModel.updateLocationsPosition(reorderedList)
+            sharedViewModel.updateViewModelList(reorderedList)
+            sharedViewModel.updateLocationsPosition(reorderedList)
         })
         binding.rcvLocations.adapter = adapter
 
@@ -75,14 +75,14 @@ class ManageLocationsFragment: Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                weatherViewModel.locationsList.collect {
+                sharedViewModel.locationsList.collect {
                     adapter.submitList(it)
                 }
             }
         }
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                weatherViewModel.errorState.collect { error ->
+                sharedViewModel.errorState.collect { error ->
                     Toast.makeText(requireContext(), error, Toast.LENGTH_LONG).show()
                 }
             }
@@ -98,11 +98,11 @@ class ManageLocationsFragment: Fragment() {
             override fun onPlaceSelected(place: Place) {
                 val coordinates = "${place.latLng?.latitude ?: 0.0},${place.latLng?.longitude ?: 0.0}"
                 val address = place.name ?: ""
-                if (weatherViewModel.locationsList.value.none { it.location.coordinates == coordinates }) {
+                if (sharedViewModel.locationsList.value.none { it.location.coordinates == coordinates }) {
                     findNavController().navigate(ManageLocationsFragmentDirections.searchResult(
                             coordinates,
                             address,
-                            weatherViewModel.locationsList.value.size
+                            sharedViewModel.locationsList.value.size
                         )
                     )
                 } else {

@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface LocationsDao {
 
-    @Query("SELECT * FROM locationitem ORDER by position")
+    @Query("SELECT * FROM location ORDER by position")
     fun getLocations(): Flow<List<Location>>
 
     @Insert

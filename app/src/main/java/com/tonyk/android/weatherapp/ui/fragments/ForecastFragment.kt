@@ -18,7 +18,7 @@ import com.tonyk.android.weatherapp.R
 import com.tonyk.android.weatherapp.databinding.FragmentForecastBinding
 import com.tonyk.android.weatherapp.util.WeatherConverter
 import com.tonyk.android.weatherapp.util.WeatherIconMapper
-import com.tonyk.android.weatherapp.viewmodel.WeatherViewModel
+import com.tonyk.android.weatherapp.viewmodel.BaseViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -29,7 +29,7 @@ class ForecastFragment: Fragment() {
     private val binding
         get () = checkNotNull(_binding)
 
-    private val forecastWeatherViewModel : WeatherViewModel by viewModels()
+    private val forecastWeatherViewModel : BaseViewModel by viewModels()
     private val args: ForecastFragmentArgs by navArgs()
 
     override fun onCreateView(

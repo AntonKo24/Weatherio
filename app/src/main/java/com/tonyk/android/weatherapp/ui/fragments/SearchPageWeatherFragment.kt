@@ -9,21 +9,21 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import coil.load
 import com.tonyk.android.weatherapp.R
-import com.tonyk.android.weatherapp.model.Location
 import com.tonyk.android.weatherapp.databinding.FragmentWeatherBinding
-import com.tonyk.android.weatherapp.viewmodel.WeatherViewModel
+import com.tonyk.android.weatherapp.model.Location
+import com.tonyk.android.weatherapp.viewmodel.SearchResultViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class SearchPageWeatherFragment: BaseWeatherFragment() {
+class SearchPageWeatherFragment: BaseWeatherScreenFragment() {
 
-    private val searchWeatherViewModel : WeatherViewModel by viewModels()
+    private val searchWeatherViewModel : SearchResultViewModel by viewModels()
     private val args: SearchPageWeatherFragmentArgs by navArgs()
 
     override fun inflateBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentWeatherBinding {
         return FragmentWeatherBinding.inflate(inflater, container, false)
     }
-    override fun getWeatherViewModel(): WeatherViewModel {
+    override fun getWeatherViewModel(): SearchResultViewModel {
         return searchWeatherViewModel
     }
 
@@ -31,7 +31,7 @@ class SearchPageWeatherFragment: BaseWeatherFragment() {
         super.onViewCreated(view, savedInstanceState)
         observeErrorState(getWeatherViewModel())
 
-        searchWeatherViewModel.initializeWeatherViewModel(args.coordinates, args.address)
+        searchWeatherViewModel.getSearchResult(args.coordinates, args.address)
 
         binding.checkButton.load(R.drawable.ic_add)
         binding.manageLocations.load(R.drawable.back)
