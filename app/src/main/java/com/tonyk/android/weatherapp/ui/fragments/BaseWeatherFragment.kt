@@ -47,7 +47,7 @@ abstract class BaseWeatherFragment : Fragment() {
     private fun observeWeatherData(weatherViewModel: WeatherViewModel) {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                weatherViewModel.weatherioItem.collect { it ->
+                weatherViewModel.weatherio.collect { it ->
                     binding.apply {
                         locationTxt.text = it.location.address
                         currentConditions.text = it.weather.currentConditions.conditions

@@ -5,22 +5,22 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import com.tonyk.android.weatherapp.model.LocationItem
+import com.tonyk.android.weatherapp.model.Location
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface LocationsDao {
 
     @Query("SELECT * FROM locationitem ORDER by position")
-    fun getLocations(): Flow<List<LocationItem>>
+    fun getLocations(): Flow<List<Location>>
 
     @Insert
-    suspend fun addLocation(location: LocationItem)
+    suspend fun addLocation(location: Location)
 
     @Delete
-    suspend fun deleteLocation(location: LocationItem)
+    suspend fun deleteLocation(location: Location)
 
     @Update
-    suspend fun updateLocation(location: LocationItem)
+    suspend fun updateLocation(location: Location)
 
 }

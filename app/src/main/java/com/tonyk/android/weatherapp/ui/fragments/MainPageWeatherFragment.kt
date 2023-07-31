@@ -65,10 +65,10 @@ class MainPageWeatherFragment : BaseWeatherFragment() {
         }
 
         binding.checkForecastBtn.setOnClickListener {
-            if (todayWeatherViewModel.weatherioItem.value.weather.days.isNotEmpty()) {
+            if (todayWeatherViewModel.weatherio.value.weather.days.isNotEmpty()) {
             findNavController().navigate(
                 MainPageWeatherFragmentDirections.showForecast(
-                    todayWeatherViewModel.weatherioItem.value
+                    todayWeatherViewModel.weatherio.value
                 )
             ) }
         }
@@ -84,6 +84,7 @@ class MainPageWeatherFragment : BaseWeatherFragment() {
         }
 
 
+
         val drawerLayout = binding.drawerLayout
         val toggle = ActionBarDrawerToggle(requireActivity(), drawerLayout, 0, 0)
         drawerLayout.addDrawerListener(toggle)
@@ -95,6 +96,11 @@ class MainPageWeatherFragment : BaseWeatherFragment() {
         }
         binding.manageLocations.setOnClickListener {
             drawerLayout.openDrawer(GravityCompat.START)
+        }
+
+        binding.settingsBtn.setOnClickListener {
+            drawerLayout.closeDrawer(GravityCompat.START)
+            findNavController().navigate(MainPageWeatherFragmentDirections.checkSettings())
         }
 
         drawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {

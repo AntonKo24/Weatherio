@@ -2,11 +2,11 @@ package com.tonyk.android.weatherapp.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tonyk.android.weatherapp.model.CurrentConditionsItem
-import com.tonyk.android.weatherapp.model.HourlyForecastItem
+import com.tonyk.android.weatherapp.model.CurrentConditions
+import com.tonyk.android.weatherapp.model.HourlyForecast
 import com.tonyk.android.weatherapp.model.WeatherResponse
-import com.tonyk.android.weatherapp.model.LocationItem
-import com.tonyk.android.weatherapp.model.WeatherioItem
+import com.tonyk.android.weatherapp.model.Location
+import com.tonyk.android.weatherapp.model.Weatherio
 import com.tonyk.android.weatherapp.database.LocationsDatabaseRepository
 import com.tonyk.android.weatherapp.api.WeatherApiRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,20 +25,20 @@ class WeatherViewModel @Inject constructor(private val weatherApiRepository: Wea
                                            private val locationsDatabase : LocationsDatabaseRepository
 ) : ViewModel() {
 
-    private val _weatherioItem: MutableStateFlow<WeatherioItem> = MutableStateFlow(WeatherioItem(
-        WeatherResponse("", emptyList(), CurrentConditionsItem("", 0.0, 0.0, 0.0, "", 0.0, ""), ""), LocationItem("", "", 0)
+    private val _weatherio: MutableStateFlow<Weatherio> = MutableStateFlow(Weatherio(
+        WeatherResponse("", emptyList(), CurrentConditions("", 0.0, 0.0, 0.0, "", 0.0, ""), ""), Location("", "", 0)
     ))
-    val weatherioItem: StateFlow<WeatherioItem> = _weatherioItem
+    val weatherio: StateFlow<Weatherio> = _weatherio
 
-    private val _hoursList = mutableListOf<HourlyForecastItem>()
-    val hoursList: List<HourlyForecastItem> get() = _hoursList
+    private val _hoursList = mutableListOf<HourlyForecast>()
+    val hoursList: List<HourlyForecast> get() = _hoursList
 
     protected val _errorState: MutableSharedFlow<String> = MutableSharedFlow()
     val errorState: SharedFlow<String> = _errorState
 
 
-    private val _locationsList: MutableStateFlow<List<WeatherioItem>> = MutableStateFlow(emptyList())
-    val locationsList: StateFlow<List<WeatherioItem>> = _locationsList
+    private val _locationsList: MutableStateFlow<List<Weatherio>> = MutableStateFlow(emptyList())
+    val locationsList: StateFlow<List<Weatherio>> = _locationsList
 
     fun getSavedLocations() {
         viewModelScope.launch {
@@ -48,7 +48,7 @@ class WeatherViewModel @Inject constructor(private val weatherApiRepository: Wea
                     newLocations.forEach { newLocationItem ->
                         if (!existingLocations.contains(newLocationItem.coordinates)) {
                             val weather = weatherApiRepository.fetchWeather(newLocationItem.coordinates)
-                            _locationsList.value = _locationsList.value + WeatherioItem(weather, newLocationItem)
+                            _locationsList.value = _locationsList.value + Weatherio(weather, newLocationItem)
                         }
                     }
                 }
@@ -58,11 +58,11 @@ class WeatherViewModel @Inject constructor(private val weatherApiRepository: Wea
         }
     }
 
-    fun updateViewModelList(dataList: List<WeatherioItem>) {
+    fun updateViewModelList(dataList: List<Weatherio>) {
         _locationsList.value = dataList
     }
 
-    fun updateLocationsPosition(dataList: List<WeatherioItem>) {
+    fun updateLocationsPosition(dataList: List<Weatherio>) {
         viewModelScope.launch {
             val locationList = dataList?.map { it.location }
             locationList?.let { list ->
@@ -76,7 +76,7 @@ class WeatherViewModel @Inject constructor(private val weatherApiRepository: Wea
         }
     }
 
-    fun deleteLocation(location: LocationItem) {
+    fun deleteLocation(location: Location) {
         viewModelScope.launch {
             locationsDatabase.deleteLocation(location)
             _locationsList.value = _locationsList.value.filter { it.location != location }
@@ -97,7 +97,7 @@ class WeatherViewModel @Inject constructor(private val weatherApiRepository: Wea
         viewModelScope.launch {
             try {
                 val weather = weatherApiRepository.fetchWeather(coordinates)
-                setWeather(WeatherioItem(weather, LocationItem(coordinates, address, -1)))
+                setWeather(Weatherio(weather, Location(coordinates, address, -1)))
             } catch (ex: Exception) {
                 _errorState.emit("Failed to fetch weather data: ${ex.message}")
             }
@@ -105,7 +105,7 @@ class WeatherViewModel @Inject constructor(private val weatherApiRepository: Wea
     }
     private fun processHourlyForecast(weatherData: WeatherResponse) {
         _hoursList.clear()
-        val hoursToAdd = mutableListOf<HourlyForecastItem>()
+        val hoursToAdd = mutableListOf<HourlyForecast>()
         var remainingHours = 24
         var dayIndex = 0
         var hourIndex = weatherData.days[0].hours.indexOfFirst {
@@ -125,11 +125,11 @@ class WeatherViewModel @Inject constructor(private val weatherApiRepository: Wea
         _hoursList.addAll(hoursToAdd)
     }
 
-    fun setWeather(weather: WeatherioItem) {
+    fun setWeather(weather: Weatherio) {
         processHourlyForecast(weather.weather)
-        _weatherioItem.value = weather
+        _weatherio.value = weather
     }
-    fun addLocation(location : LocationItem) {
+    fun addLocation(location : Location) {
         viewModelScope.launch {
             locationsDatabase.addLocation(location)
         }

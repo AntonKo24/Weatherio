@@ -9,7 +9,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import coil.load
 import com.tonyk.android.weatherapp.R
-import com.tonyk.android.weatherapp.model.LocationItem
+import com.tonyk.android.weatherapp.model.Location
 import com.tonyk.android.weatherapp.databinding.FragmentWeatherBinding
 import com.tonyk.android.weatherapp.viewmodel.WeatherViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -37,10 +37,10 @@ class SearchPageWeatherFragment: BaseWeatherFragment() {
         binding.manageLocations.load(R.drawable.back)
 
         binding.checkForecastBtn.setOnClickListener {
-            if (searchWeatherViewModel.weatherioItem.value.weather.days.isNotEmpty()) {
+            if (searchWeatherViewModel.weatherio.value.weather.days.isNotEmpty()) {
             findNavController().navigate(
                 SearchPageWeatherFragmentDirections.searchForecast(
-                    searchWeatherViewModel.weatherioItem.value
+                    searchWeatherViewModel.weatherio.value
                 )
             ) }
         }
@@ -48,7 +48,7 @@ class SearchPageWeatherFragment: BaseWeatherFragment() {
             findNavController().popBackStack()
         }
         binding.checkButton.setOnClickListener {
-            searchWeatherViewModel.addLocation(LocationItem(args.coordinates, args.address, args.listSize))
+            searchWeatherViewModel.addLocation(Location(args.coordinates, args.address, args.listSize))
             findNavController().popBackStack()
         }
     }

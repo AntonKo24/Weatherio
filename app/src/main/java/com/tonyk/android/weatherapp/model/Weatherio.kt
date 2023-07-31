@@ -3,7 +3,7 @@ package com.tonyk.android.weatherapp.model
 
 import java.io.Serializable
 
-data class WeatherioItem (
+data class Weatherio (
     val weather : WeatherResponse,
-    val location : LocationItem
+    val location : Location
         ) : Serializable

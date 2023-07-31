@@ -50,7 +50,7 @@ class ForecastFragment: Fragment() {
         binding.rcvForecast.layoutManager = LinearLayoutManager(context)
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                forecastWeatherViewModel.weatherioItem.collect { it ->
+                forecastWeatherViewModel.weatherio.collect { it ->
                     binding.apply {
                         locationText.text = it.location.address
                         if (it.weather.days.isNotEmpty()) {

@@ -4,7 +4,7 @@ import com.squareup.moshi.JsonClass
 
 
 @JsonClass(generateAdapter = true)
-data class HourlyForecastItem (
+data class HourlyForecast (
         val datetime : String,
         val temp : Double,
         val icon : String

@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.tonyk.android.weatherapp.R
-import com.tonyk.android.weatherapp.model.DailyForecastItem
+import com.tonyk.android.weatherapp.model.DailyForecast
 import com.tonyk.android.weatherapp.databinding.DaysForecastItemBinding
 import com.tonyk.android.weatherapp.util.DateConverter
 import com.tonyk.android.weatherapp.util.WeatherConverter
@@ -13,7 +13,7 @@ import com.tonyk.android.weatherapp.util.WeatherIconMapper
 
 class ForecastListHolder(private val binding: DaysForecastItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(weather: DailyForecastItem) {
+    fun bind(weather: DailyForecast) {
         binding.apply {
             dayTxt.text = DateConverter.formatDate(weather.datetime)
             tempText.text = binding.root.context.getString(
@@ -26,7 +26,7 @@ class ForecastListHolder(private val binding: DaysForecastItemBinding) : Recycle
     }
 }
 
-class ForecastWeatherAdapter (private val weatherList : List<DailyForecastItem>) : RecyclerView.Adapter<ForecastListHolder>() {
+class ForecastWeatherAdapter (private val weatherList : List<DailyForecast>) : RecyclerView.Adapter<ForecastListHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ForecastListHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = DaysForecastItemBinding.inflate(inflater, parent, false)

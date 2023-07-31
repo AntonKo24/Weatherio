@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import com.tonyk.android.weatherapp.R
-import com.tonyk.android.weatherapp.model.WeatherioItem
+import com.tonyk.android.weatherapp.model.Weatherio
 import com.tonyk.android.weatherapp.databinding.ManageLocationsItemBinding
 import com.tonyk.android.weatherapp.util.itemtouchhelper.ItemTouchHelperAdapter
 import com.tonyk.android.weatherapp.util.WeatherConverter
@@ -15,10 +15,10 @@ import com.tonyk.android.weatherapp.util.WeatherIconMapper
 import java.util.Collections
 
 class LocationsAdapter(
-    private val onLocationItemClick: (WeatherioItem) -> Unit,
-    private val deleteItem: (WeatherioItem) -> Unit,
-    private val onListReordered: (List<WeatherioItem>) -> Unit
-) : ListAdapter<WeatherioItem, LocationsViewHolder>(LocationDiffCallback()),
+    private val onLocationItemClick: (Weatherio) -> Unit,
+    private val deleteItem: (Weatherio) -> Unit,
+    private val onListReordered: (List<Weatherio>) -> Unit
+) : ListAdapter<Weatherio, LocationsViewHolder>(LocationDiffCallback()),
     ItemTouchHelperAdapter {
 
 
@@ -42,10 +42,10 @@ class LocationsAdapter(
     }
 }
 
-class LocationsViewHolder(private val binding: ManageLocationsItemBinding, private val onLocationItemClick: (WeatherioItem) -> Unit, private val deleteItem: (WeatherioItem) -> Unit) :
+class LocationsViewHolder(private val binding: ManageLocationsItemBinding, private val onLocationItemClick: (Weatherio) -> Unit, private val deleteItem: (Weatherio) -> Unit) :
     RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(item: WeatherioItem) {
+    fun bind(item: Weatherio) {
         binding.apply {
             resolvedAddressTxt.text = item.location.address
             tempText.text = root.context.getString(R.string.Temperature, WeatherConverter.formatData(item.weather.currentConditions.temp))
@@ -64,12 +64,12 @@ class LocationsViewHolder(private val binding: ManageLocationsItemBinding, priva
     }
 }
 
-class LocationDiffCallback : DiffUtil.ItemCallback<WeatherioItem>() {
-    override fun areItemsTheSame(oldItem: WeatherioItem, newItem: WeatherioItem): Boolean {
+class LocationDiffCallback : DiffUtil.ItemCallback<Weatherio>() {
+    override fun areItemsTheSame(oldItem: Weatherio, newItem: Weatherio): Boolean {
         return oldItem.location == newItem.location
     }
 
-    override fun areContentsTheSame(oldItem: WeatherioItem, newItem: WeatherioItem): Boolean {
+    override fun areContentsTheSame(oldItem: Weatherio, newItem: Weatherio): Boolean {
         return oldItem == newItem
     }
 }

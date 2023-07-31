@@ -4,14 +4,12 @@ import com.squareup.moshi.JsonClass
 
 
 @JsonClass(generateAdapter = true)
-data class DailyForecastItem (
+data class CurrentConditions (
     val datetime : String,
-    val tempmax : Double,
-    val tempmin : Double,
-    val hours : List<HourlyForecastItem>,
-    val conditions : String,
-    val humidity : Double,
+    val temp: Double,
     val windspeed : Double,
+    val humidity : Double,
+    val conditions : String,
     val pressure : Double,
     val icon : String
-    )
+)
