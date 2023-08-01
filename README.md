@@ -3,7 +3,7 @@
 # Weatherio
 
 Introducing my weather app – your ultimate companion for staying informed about the elements! App delivers accurate and up-to-date weather forecasts right to your fingertips, empowering you to plan your day with confidence.
-With an intuitive and user-friendly interface, you can easily access current weather conditions, including temperature, humidity, wind speed, and atmospheric pressure. Stay ahead of the game with hourly and daily forecasts, ensuring you're always prepared for any weather eventuality.
+With an intuitive and user-friendly interface, you can easily access current weather conditions, including temperature, humidity, wind speed and atmospheric pressure. Stay ahead of the game with hourly and daily forecasts, ensuring you're always prepared for any weather eventuality.
 
 
 <p align="center">  <img src="https://cdn.discordapp.com/attachments/327804857501351937/1135861238933495858/Screenshot_20230801_120526.png" width="25%" height="25%"> <img src="https://cdn.discordapp.com/attachments/327804857501351937/1135861239260663848/Screenshot_20230801_120555.png" width="25%" height="25%"> <img src="https://cdn.discordapp.com/attachments/327804857501351937/1135861239734607892/Screenshot_20230801_120605.png" width="25%" height="25%"> <img  
