@@ -52,7 +52,7 @@ object LocationService {
     private fun getLocationName(context: Context, latitude: Double, longitude: Double) : String {
         return try {
             val addresses: List<Address>? = Geocoder(context, Locale.getDefault()).getFromLocation(latitude, longitude, 1)
-            if (addresses != null && addresses.isNotEmpty()) {
+            if (!addresses.isNullOrEmpty()) {
                 val cityName = addresses[0].locality ?: ""
                 val countryName = addresses[0].countryName ?: ""
                 (if (cityName.isNotEmpty()) "$cityName, $countryName" else countryName)

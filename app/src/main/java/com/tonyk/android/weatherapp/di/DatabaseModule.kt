@@ -5,15 +5,13 @@ import androidx.room.Room
 import com.tonyk.android.weatherapp.database.LocationsDatabase
 import com.tonyk.android.weatherapp.database.LocationsDatabaseRepository
 import com.tonyk.android.weatherapp.database.LocationsDatabaseRepositoryImpl
+import com.tonyk.android.weatherapp.util.Constants
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
-
-
-private const val DATABASE_NAME = "location-database"
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -25,7 +23,7 @@ object DatabaseModule {
         return Room.databaseBuilder(
             context.applicationContext,
             LocationsDatabase::class.java,
-            DATABASE_NAME
+            Constants.DATABASE_NAME
         )
             .build()
     }

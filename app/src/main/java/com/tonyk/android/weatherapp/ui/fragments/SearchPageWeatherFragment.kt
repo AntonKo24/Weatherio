@@ -11,6 +11,7 @@ import coil.load
 import com.tonyk.android.weatherapp.R
 import com.tonyk.android.weatherapp.databinding.FragmentWeatherBinding
 import com.tonyk.android.weatherapp.model.Location
+import com.tonyk.android.weatherapp.ui.BaseWeatherScreenFragment
 import com.tonyk.android.weatherapp.viewmodel.SearchResultViewModel
 import dagger.hilt.android.AndroidEntryPoint
 

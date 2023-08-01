@@ -7,7 +7,6 @@ import coil.load
 import com.tonyk.android.weatherapp.R
 import com.tonyk.android.weatherapp.databinding.HoursForecastItemBinding
 import com.tonyk.android.weatherapp.model.HourlyForecast
-
 import com.tonyk.android.weatherapp.util.DateConverter
 import com.tonyk.android.weatherapp.util.WeatherConverter
 import com.tonyk.android.weatherapp.util.WeatherIconMapper

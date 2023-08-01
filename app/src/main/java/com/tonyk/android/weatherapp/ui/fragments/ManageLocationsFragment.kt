@@ -48,14 +48,12 @@ class ManageLocationsFragment: Fragment() {
         return binding.root
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         binding.backButton.setOnClickListener {
             findNavController().popBackStack()
         }
-
 
         binding.rcvLocations.layoutManager = LinearLayoutManager(context)
         val adapter = LocationsAdapter({ item ->
@@ -73,6 +71,7 @@ class ManageLocationsFragment: Fragment() {
         val itemTouchHelper = ItemTouchHelper(DragItemTouchHelperCallback(adapter))
         itemTouchHelper.attachToRecyclerView(binding.rcvLocations)
 
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 sharedViewModel.locationsList.collect {
@@ -87,6 +86,7 @@ class ManageLocationsFragment: Fragment() {
                 }
             }
         }
+
 
         val autocompleteFragment =
             childFragmentManager.findFragmentById(R.id.autocompleteFragment) as AutocompleteSupportFragment
