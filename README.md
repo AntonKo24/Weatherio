@@ -8,7 +8,7 @@ With an intuitive and user-friendly interface, you can easily access current wea
 
 
 <p align="center">  <img src="https://cdn.discordapp.com/attachments/327804857501351937/1135861238933495858/Screenshot_20230801_120526.png" width="25%" height="25%"> <img src="https://cdn.discordapp.com/attachments/327804857501351937/1135861239260663848/Screenshot_20230801_120555.png" width="25%" height="25%"> <img src="https://cdn.discordapp.com/attachments/327804857501351937/1135861239734607892/Screenshot_20230801_120605.png" width="25%" height="25%"> <img  
-src="https://cdn.discordapp.com/attachments/327804857501351937/1135861240233742377/Screenshot_20230801_120646.png" width="25%" height="25%"> <img src="https://cdn.discordapp.com/attachments/327804857501351937/1135869826557030450/4.png" width="25%" height="25%"> <img src="https://cdn.discordapp.com/attachments/327804857501351937/1135869578526871582/1.png" width="25%" height="25%">  </p>
+src="https://cdn.discordapp.com/attachments/327804857501351937/1135861240233742377/Screenshot_20230801_120646.png" width="25%" height="25%"> <img src="https://cdn.discordapp.com/attachments/327804857501351937/1135869826557030450/4.png" width="25%" height="25%"> <img                                                                                                src="https://cdn.discordapp.com/attachments/327804857501351937/1135869578526871582/1.png" width="25%" height="25%"> </p>
 
 ## About
 
