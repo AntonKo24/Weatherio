@@ -4,7 +4,7 @@
 
 Introducing my weather app – your ultimate companion for staying informed about the elements! App delivers accurate and up-to-date weather forecasts right to your fingertips, empowering you to plan your day with confidence.
 
-With an intuitive and user-friendly interface, you can easily access current weather conditions, including temperature, humidity, wind speed, and more. Stay ahead of the game with hourly and daily forecasts, ensuring you're always prepared for any weather eventuality.
+With an intuitive and user-friendly interface, you can easily access current weather conditions, including temperature, humidity, wind speed, and atmospheric pressure. Stay ahead of the game with hourly and daily forecasts, ensuring you're always prepared for any weather eventuality.
 
 ## About
 
