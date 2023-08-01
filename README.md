@@ -20,10 +20,14 @@ src="https://cdn.discordapp.com/attachments/327804857501351937/11358612402337423
 - Android SDK: Software development kit for creating Android apps.
 - Weather Data API: https://www.visualcrossing.com/weather-api
 - Google Places API.
-- Retrofit: A popular networking library for Android that simplifies the process of making API calls. 
+- Retrofit: A popular networking library for Android that simplifies the process of making API calls.
+- Moshi: Moshi is used for parsing JSON responses from APIs and mapping them to data classes.
 - Room: An Android library that provides an abstraction layer over SQLite to handle local data storage. Was used here to save avorite locations.
 - Kotlin Coroutines: A powerful feature in Kotlin that enables asynchronous programming.
 - Kotlin Flow: A reactive streams library for Kotlin.
+- Dagger Hilt: A dependency injection library for Android.
+- Navigation Component: Part of Android Jetpack, Navigation Component helped to manage navigation between different fragments.
+- Coil: Image loading library for efficiently loading and displaying images in Android apps.
 - ViewModel: A part of Android Jetpack used to store and manage weather-related data and logic.
 - XML: Markup language for designing the user interface in Android.
 - Structured according to MVVM, single activity, repository patterns.
