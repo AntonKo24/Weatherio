@@ -19,7 +19,7 @@ import coil.load
 import com.tonyk.android.weatherapp.ui.adapters.MenuLocationsAdapter
 import com.tonyk.android.weatherapp.R
 import com.tonyk.android.weatherapp.databinding.FragmentWeatherBinding
-
+import com.tonyk.android.weatherapp.ui.BaseWeatherScreenFragment
 import com.tonyk.android.weatherapp.util.LocationService
 import com.tonyk.android.weatherapp.viewmodel.SharedViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -31,15 +31,12 @@ class MainPageWeatherFragment : BaseWeatherScreenFragment() {
 
     private val sharedViewModel: SharedViewModel by activityViewModels()
 
-
     override fun inflateBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentWeatherBinding {
         return FragmentWeatherBinding.inflate(inflater, container, false)
     }
     override fun getWeatherViewModel(): SharedViewModel {
         return sharedViewModel
     }
-
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -78,16 +75,15 @@ class MainPageWeatherFragment : BaseWeatherScreenFragment() {
         }
 
         binding.menuRcv.layoutManager = LinearLayoutManager(context)
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                sharedViewModel.locationsList.collect() { it ->
+                sharedViewModel.locationsList.collect { it ->
                     binding.menuRcv.adapter = MenuLocationsAdapter(it) { sharedViewModel.setWeather(it)
                     binding.drawerLayout.closeDrawer(GravityCompat.START) }
                 }
             }
         }
-
-
 
         val drawerLayout = binding.drawerLayout
         val toggle = ActionBarDrawerToggle(requireActivity(), drawerLayout, 0, 0)

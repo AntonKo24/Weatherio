@@ -21,8 +21,6 @@ class LocationsAdapter(
 ) : ListAdapter<Weatherio, LocationsViewHolder>(LocationDiffCallback()),
     ItemTouchHelperAdapter {
 
-
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LocationsViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ManageLocationsItemBinding.inflate(inflater, parent, false)

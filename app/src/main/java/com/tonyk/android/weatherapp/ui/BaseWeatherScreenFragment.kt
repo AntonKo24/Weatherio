@@ -1,4 +1,4 @@
-package com.tonyk.android.weatherapp.ui.fragments
+package com.tonyk.android.weatherapp.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater

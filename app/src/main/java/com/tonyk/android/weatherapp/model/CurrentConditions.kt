@@ -2,7 +2,6 @@ package com.tonyk.android.weatherapp.model
 
 import com.squareup.moshi.JsonClass
 
-
 @JsonClass(generateAdapter = true)
 data class CurrentConditions (
     val datetime : String,
