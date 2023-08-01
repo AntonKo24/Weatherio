@@ -11,16 +11,13 @@ src="https://cdn.discordapp.com/attachments/327804857501351937/11358612402337423
 
 ## Features
 
-- Get Current Weather and 2-Week Forecast: Users can search for the current weather and the weather forecast for the next two weeks based on their location. You can use the Google Places API to allow users to input their location.
+- Get Current Weather and 2-Week Forecast: Users can search for the current weather and the weather forecast for the next two weeks based on their location. You can use the Google Places API to allow users to search for specific location.
 - Save Favorite Locations: Users can save their favorite locations to easily access the weather information for those places without having to search again.
 
 ## Technologies Used
 
 - Kotlin: Programming language.
 - Android SDK: Software development kit for creating Android apps.
-- Android Studio: Integrated development environment (IDE) for Android app development.
-- Git: Version control system for tracking changes in the project.
-- GitHub: Hosting platform for the Git repository.
 - Weather Data API: https://www.visualcrossing.com/weather-api
 - Google Places API.
 - Retrofit: A popular networking library for Android that simplifies the process of making API calls. 
@@ -34,3 +31,12 @@ src="https://cdn.discordapp.com/attachments/327804857501351937/11358612402337423
 ## About
 
 This project was created by me for educational purposes. Throughout its development, I aimed to implement and showcase some of the knowledge I acquired during my learning journey. There is much within this project that I would be delighted to discuss and share my thought process behind. I welcome any feedback and discussions on the project as it represents a valuable learning experience for me. Thank you for taking the time to explore this repository, and I hope you find it insightful and informative.
+
+## Contact
+
+For any inquiries or questions, you can reach out to the project maintainer:
+
+- Name: Anton K.
+- Email: anton.korieniev@gmail.com
+
+Feel free to contact if you need any further information or assistance.
