@@ -29,7 +29,6 @@ src="https://cdn.discordapp.com/attachments/327804857501351937/11358612402337423
 - Navigation Component: Part of Android Jetpack, Navigation Component helped to manage navigation between different fragments.
 - Coil: Image loading library for efficiently loading and displaying images in Android apps.
 - ViewModel: A part of Android Jetpack used to store and manage weather-related data and logic.
-- XML: Markup language for designing the user interface in Android.
 - Structured according to MVVM, single activity, repository patterns.
 
 ## About
